@@ -10,6 +10,8 @@ use Loader;
 use PageTemplate;
 use User;
 use Core;
+use Concrete\Core\Page\Desktop\DesktopList;
+
 
 class Composer extends BackendInterfacePageController
 {
@@ -101,11 +103,27 @@ class Composer extends BackendInterfacePageController
     {
         if ($this->validateAction()) {
             $ptr = new PageEditResponse();
+            $nh = $this->app->make('helper/navigation');
+            $config = $this->app->make('config');
             if ($this->permissions->canDeletePage() && $this->page->isPageDraft()) {
                 $this->page->delete();
-                $u = new User();
-                $cID = $u->getPreviousFrontendPageID();
-                $ptr->setRedirectURL(DIR_REL . '/' . DISPATCHER_FILENAME . '?cID=' . $cID);
+                $loginRedirectMode = $config->get('concrete.misc.login_redirect');
+                $loginRedirectPageID = intval($config->get('concrete.misc.login_redirect_cid'));
+                if ($loginRedirectMode == 'CUSTOM' && $loginRedirectPageID > 0) {
+                    $rc = Page::getByID($loginRedirectPageID);
+                    if ($rc instanceof Page && !$rc->isError()) {
+                        $rUrl = $nh->getLinkToCollection($rc);
+                    }
+                } elseif ($loginRedirectMode == 'DESKTOP') {
+                    $desktop = DesktopList::getMyDesktop();
+                    if (is_object($desktop)) {
+                        $rUrl = $nh->getLinkToCollection($desktop);
+                    }
+                }
+                if (!$rUrl) {
+                    $rUrl = $nh->getLinkToCollection(Page::getByID(HOME_CID));
+                }
+                $ptr->setRedirectURL($rUrl);
             } else {
                 $e = Loader::helper('validation/error');
                 $e->add(t('You do not have permission to discard this page.'));

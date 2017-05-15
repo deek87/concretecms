@@ -3,7 +3,7 @@ namespace Concrete\Controller\Panel\Page;
 
 use Concrete\Controller\Backend\UserInterface\Page as BackendInterfacePageController;
 use Concrete\Core\Form\Service\Widget\DateTime;
-use Concrete\Core\Support\Facade\Config;
+use Concrete\Core\Page\Desktop\DesktopList;
 use Concrete\Core\User\User;
 use Permissions;
 use CollectionVersion;
@@ -76,10 +76,14 @@ class CheckIn extends BackendInterfacePageController
 
     public function submit()
     {
+
         if ($this->validateAction()) {
+
+            $nh = $this->app->make('helper/navigation');
+            $config = $this->app->make('config');
             $comments = $this->request->request('comments');
             $comments = is_string($comments) ? trim($comments) : '';
-            if ($comments === '' && $this->app->make('config')->get('concrete.misc.require_version_comments')) {
+            if ($comments === '' && $config->get('concrete.misc.require_version_comments')) {
                 $rf = $this->app->make(ResponseFactoryInterface::class);
                 return $rf->create(t('Please specify the version comments'), 400);
             }
@@ -117,10 +121,24 @@ class CheckIn extends BackendInterfacePageController
             } else {
                 if ($this->request->request->get('action') == 'discard') {
                     if ($c->isPageDraft() && $this->permissions->canDeletePage()) {
-                        $u = new User();
-                        $cID = $u->getPreviousFrontendPageID();
                         $this->page->delete();
-                        $pr->setRedirectURL(DIR_REL . '/' . DISPATCHER_FILENAME . '?cID=' . $cID);
+                        $loginRedirectMode = $config->get('concrete.misc.login_redirect');
+                        $loginRedirectPageID = intval($config->get('concrete.misc.login_redirect_cid'));
+                        if ($loginRedirectMode == 'CUSTOM' && $loginRedirectPageID > 0) {
+                            $rc = Page::getByID($loginRedirectPageID);
+                            if ($rc instanceof Page && !$rc->isError()) {
+                                $rUrl = $nh->getLinkToCollection($rc);
+                            }
+                        } elseif ($loginRedirectMode == 'DESKTOP') {
+                            $desktop = DesktopList::getMyDesktop();
+                            if (is_object($desktop)) {
+                                $rUrl = $nh->getLinkToCollection($desktop);
+                            }
+                        }
+                        if (!$rUrl) {
+                            $rUrl = $nh->getLinkToCollection(Page::getByID(HOME_CID));
+                        }
+                        $pr->setRedirectURL($rUrl);
                         $pr->outputJSON();
                     } else {
                         if ($v->canDiscard()) {
@@ -133,7 +151,7 @@ class CheckIn extends BackendInterfacePageController
             }
             $nc = Page::getByID($c->getCollectionID(), $v->getVersionID());
             $u->unloadCollectionEdit();
-            $pr->setRedirectURL(Loader::helper('navigation')->getLinkToCollection($nc, true));
+            $pr->setRedirectURL($nh->getLinkToCollection($nc, true));
             $pr->outputJSON();
         }
     }
