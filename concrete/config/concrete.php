@@ -6,9 +6,9 @@ return [
      *
      * @var string
      */
-    'version' => '8.2.0b1',
-    'version_installed' => '8.2.0b1',
-    'version_db' => '20170424000000', // the key of the latest database migration
+    'version' => '8.2.0RC1',
+    'version_installed' => '8.2.0RC1',
+    'version_db' => '20170613000000', // the key of the latest database migration
 
     /*
      * Installation status
@@ -771,21 +771,13 @@ return [
         ],
         'ban' => [
             'ip' => [
+                // Is the automatic ban system enabled?
                 'enabled' => true,
-
-                /*
-                 * Maximum attempts
-                 */
+                // Maximum number of login attempts before banning the IP address
                 'attempts' => 5,
-
-                /*
-                 * Threshold time
-                 */
+                // Time window (in seconds) for past failed login attempts
                 'time' => 300,
-
-                /*
-                 * Ban length in minutes
-                 */
+                // Ban duration (in minutes) when <attempts> failed logins occurred in the past <time> seconds
                 'length' => 10,
             ],
         ],
@@ -890,6 +882,12 @@ return [
         'search' => [
             // Always reindex pages (usually it isn't performed when approving workflows)
             'always_reindex' => false,
+        ],
+    ],
+
+    'editor' => [
+        'plugins' => [
+            'selected' => [],
         ],
     ],
 ];
