@@ -178,11 +178,11 @@ class PageList extends DatabaseItemList implements PagerProviderInterface, Pagin
     public function finalizeQuery(\Doctrine\DBAL\Query\QueryBuilder $query)
     {
         // avoid slow left join if we have an active page version in which case we always have a page path
-        $joinOperation = $this->pageVersionToRetrieve == self::PAGE_VERSION_ACTIVE ? 'innerJoin' : 'leftJoin';
+        $joinOperation = $this->pageVersionToRetrieve == self::PAGE_VERSION_ACTIVE ? 'leftJoin' : 'innerJoin';
         if ($this->includeAliases) {
             $query->from('Pages', 'p')
                 ->leftJoin('p', 'Pages', 'pa', 'p.cPointerID = pa.cID')
-                ->leftJoin('p', 'PagePaths', 'pp', 'p.cID = pp.cID and pp.ppIsCanonical = true')
+                ->$joinOperation('p', 'PagePaths', 'pp', 'p.cID = pp.cID and pp.ppIsCanonical = true')
                 ->leftJoin('pa', 'PageSearchIndex', 'psi', 'psi.cID = if(pa.cID is null, p.cID, pa.cID)')
                 ->leftJoin('p', 'PageTypes', 'pt', 'pt.ptID = if(pa.cID is null, p.ptID, pa.ptID)')
                 ->leftJoin('p', 'CollectionSearchIndexAttributes', 'csi', 'csi.cID = if(pa.cID is null, p.cID, pa.cID)')
