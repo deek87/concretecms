@@ -31,8 +31,8 @@ class OAuth2ServiceProvider extends Provider
                 $groupRouter->all('token', 'Oauth2::token');
             });
 
-        $this->app->bindShared('oauth2/server', function() {
-            $storage = new Concrete($this->db->getWrappedConnection(), array(
+        $this->app->singleton('oauth2/server', function() {
+            $storage = new Concrete($this->db->getWrappedConnection(), [
                 'client_table' => 'OAuthServerClients',
                 'access_token_table' => 'OAuthServerAccessTokens',
                 'refresh_token_table' => 'OAuthServerRefreshTokens',
@@ -42,14 +42,14 @@ class OAuth2ServiceProvider extends Provider
                 'scope_table'  => 'OAuthServerScopes',
                 'public_key_table'  => 'OAuthServerPublicKeys',
                 'jti_table' => 'OAuthServerJti'
-            ));
+            ]);
             $server = new \OAuth2\Server($storage);
             //$server->addGrantType(new \OAuth2\GrantType\UserCredentials($storage));
             $server->addGrantType(new \OAuth2\GrantType\ClientCredentials($storage));
             return $server;
         });
 
-        $this->app->bindShared('oauth2/request', function() {
+        $this->app->singleton('oauth2/request', function() {
             $request = \OAuth2\Request::createFromGlobals();
             return $request;
         });

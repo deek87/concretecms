@@ -1,6 +1,7 @@
 <?php
 namespace Concrete\Core\API;
 
+use Concrete\Core\API\Commands\CreatePageCommand;
 use Concrete\Core\API\Transformer\InfoTransformer;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
@@ -34,6 +35,10 @@ class APIServiceProvider extends ServiceProvider
                 $groupRouter->get('/system/info', function() {
                     $info = $this->app->make(Info::class);
                     return new Item($info, new InfoTransformer());
+                });
+                $groupRouter->post('page/create', function () {
+                    $command = $this->app->make(CreatePageCommand::class);
+                    return $command->execute();
                 });
             });
     }
