@@ -12,10 +12,10 @@ use Concrete\Core\Support\Facade\Facade;
 /**
  * Class AbstractCommand
  * This class is used for API commands to create/read/update/delete pages/users/blocks/etc
+ * implements CommandInterface
  */
-abstract class AbstractCommand implements CommandInterface
+abstract class AbstractCommand
 {
-
 
     /** @var Application $app */
     protected $app;
