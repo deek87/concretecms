@@ -102,30 +102,30 @@ class CreatePageCommand extends AbstractCommand
         $this->publishDate = $this->validateDate($this->request->get('publish_date'));
 
 
-        $pageTypeID = $sanitizer->SanitizeInt($this->request->get('pageType'));
-        $pageTypeHandle = $sanitizer->SanitizeString($this->request->get('pageType'));
+        $pageTypeID = $sanitizer->SanitizeInt($this->request->get('page_type'));
+        $pageTypeHandle = $sanitizer->SanitizeString($this->request->get('page_type'));
 
         //Try ID first
         $pageType = Type::getByID($pageTypeID);
-        if (!is_object($pageType) || $pageType->isError()) {
+        if (!is_object($pageType)) {
             // If it fails then try the handle
             $pageType = Type::getByHandle($pageTypeHandle);
         }
-        if (!is_object($pageType) || $pageType->isError()) {
+        if (!is_object($pageType)) {
             // If both fail then set to null
             $pageType = null;
         }
 
-        $pageTemplateID = $this->app->make(SanitizeService::class)->SanitizeInt($this->request->get('page_type'));
-        $pageTemplateHandle = $this->app->make(SanitizeService::class)->SanitizeString($this->request->get('page_type'));
+        $pageTemplateID = $this->app->make(SanitizeService::class)->SanitizeInt($this->request->get('page_template'));
+        $pageTemplateHandle = $this->app->make(SanitizeService::class)->SanitizeString($this->request->get('page_template'));
 
         //Try ID first
         $pageTemplate = Type::getByID($pageTemplateID);
-        if (!is_object($pageType) || $pageTemplate->isError()) {
+        if (!is_object($pageTemplate)) {
             // If it fails then try the handle
             $pageTemplate = Type::getByHandle($pageTemplateHandle);
         }
-        if (!is_object($pageTemplate) || $pageTemplate->isError()) {
+        if (!is_object($pageTemplate)) {
             // If both fail then set to null
             $pageTemplate = null;
         }
@@ -160,6 +160,8 @@ class CreatePageCommand extends AbstractCommand
                 }
 
                 $pageDraft->getPageTypeObject()->publish($pageDraft, $this->publishDate);
+                // We need to get the most recent version as $pageDraft is currently the pageDraft version.
+                $pageDraft = Page::getByID($pageDraft->getCollectionID(), 'RECENT');
                 if ($pageDraft->isPageDraft()) {
                     $messageArray = ['message'=>t('Page Submited to Workflow'), 'page'=>$pageDraft->getJSONObject()];
                 } else {

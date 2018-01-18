@@ -33,7 +33,7 @@ class GetPageListCommand extends AbstractCommand
         if ($permissionChecker->canSearchUser()) {
             return new Item($this->pageList, new PageListTransformer());
         } else {
-
+            throw new \Exception(t('Access denied'));
         }
 
 
@@ -41,19 +41,31 @@ class GetPageListCommand extends AbstractCommand
 
     protected function parseData($data)
     {
-        $pageList = new PageList();
-        if (isset($this->data[''])) {
-
+        $this->pageList = new PageList();
+        if (isset($this->data['filter'])) {
+            if (!is_array($this->data['filter'])) {
+                $this->data['filter'] = explode(',',$this->data['filter']);
+            }
+            foreach ($this->data['filter'] as $filter) {
+                $this->filterPageList($filter);
+            }
         }
 
      return $data;
     }
 
     /**
-     * @param PageList $pageList
+     * @param string|null $filter
      */
-    protected function filterPageList(&$pageList)
+    protected function filterPageList($filter = null)
     {
+        switch ($filter){
+            case 'keywords':
+                $this->pageList->filterByKeywords($this->request->get('keywords'));
+                break;
+                default;
+
+        }
 
     }
 

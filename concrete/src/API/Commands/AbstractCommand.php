@@ -7,6 +7,7 @@ use Concrete\Core\API\Transformer\BasicTransformer;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Http\Request;
 use League\Fractal\Resource\Item;
+use Concrete\Core\Support\Facade\Facade;
 
 /**
  * Class AbstractCommand
@@ -27,11 +28,10 @@ abstract class AbstractCommand implements CommandInterface
 
     /**
      * AbstractCommand constructor.
-     * @param array $app
      */
-    public function __construct(Application $app)
+    public function __construct()
     {
-        $this->app = $app;
+        $this->app = Facade::getFacadeApplication();
         $this->request = Request::getInstance();
         $this->getDataFromRequest();
 

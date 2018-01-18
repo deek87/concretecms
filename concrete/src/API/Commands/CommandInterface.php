@@ -16,11 +16,6 @@ interface CommandInterface
      */
     public function execute() ;
 
-    /**
-     * CommandInterface constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app);
 
     /**
      * @param array $data
