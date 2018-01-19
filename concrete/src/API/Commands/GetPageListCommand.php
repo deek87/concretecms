@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Concrete\Core\Api\Commands;
+namespace Concrete\Core\API\Commands;
 
 
 use Concrete\Core\API\Transformer\PageListTransformer;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Core\Api\Commands;
+namespace Concrete\Core\API\Commands;
 
 
 use Concrete\Core\API\Transformer\BasicTransformer;
@@ -12,9 +12,8 @@ use Concrete\Core\Support\Facade\Facade;
 /**
  * Class AbstractCommand
  * This class is used for API commands to create/read/update/delete pages/users/blocks/etc
- * implements CommandInterface
  */
-abstract class AbstractCommand
+abstract class AbstractCommand implements CommandInterface
 {
 
     /** @var Application $app */
