@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Core\API\Commands;
+namespace Concrete\Core\Foundation\Bus\Command;
 
 
 use Concrete\Core\API\Transformer\BasicTransformer;
@@ -91,14 +91,11 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     * This function is called by the API to return a fractal Item Object
-     * @return Item
+     * @return array
      */
-    public function execute()
-    {
-        return new Item($this->data, new BasicTransformer());
-
-    }
+    public function getData() {
+        return $this->data;
+   }
 
 
 }

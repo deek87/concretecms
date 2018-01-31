@@ -9,6 +9,7 @@ use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
 use League\Tactician\Handler\Locator\InMemoryLocator;
 use League\Tactician\Handler\MethodNameInflector\HandleClassNameInflector;
 use Concrete\Core\Foundation\Bus\Handler\MethodNameInflector\HandleClassNameWithFallbackInflector;
+use Concrete\Core\Foundation\Bus\Handler\CommandHandleLocator;
 
 class BusServiceProvider extends ServiceProvider
 {
@@ -29,7 +30,7 @@ class BusServiceProvider extends ServiceProvider
             $locator = $app->make('bus/list');
             $handlerMiddleware = new CommandHandlerMiddleware(
                 new ClassNameExtractor(),
-                $locator,
+                new CommandHandleLocator(),
                 new HandleClassNameWithFallbackInflector()
             );
             $commandBus = new CommandBus([$handlerMiddleware]);

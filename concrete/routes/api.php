@@ -4,7 +4,8 @@ defined('C5_EXECUTE') or die("Access Denied.");
 use Concrete\Core\System\Info;
 use Concrete\Core\API\Transformer\InfoTransformer;
 use League\Fractal\Resource\Item;
-use Concrete\Core\API\Commands\CreatePageCommand;
+use Concrete\Core\Support\Facade\Facade;
+use Concrete\Core\Foundation\Bus\Command\CreatePageCommand;
 
 /**
  * @var $router \Concrete\Core\Routing\Router
@@ -15,6 +16,7 @@ $router->get('/system/info', function() {
 });
 
 $router->post('page/create', function () {
-    $command = new CreatePageCommand();
-    return $command->execute();
+    $app = Facade::getFacadeApplication();
+    $commandBus = $app->make('bus');
+    return $commandBus->handle(new CreatePageCommand());
 });

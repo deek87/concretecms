@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Concrete\Core\Foundation\Bus\Handler;
+namespace Concrete\Core\Foundation\Bus\Handler\API;
 
 use Concrete\Core\Foundation\Bus\Command\CreatePageCommand;
 use Concrete\Core\API\Transformer\BasicTransformer;
@@ -10,10 +10,7 @@ use League\Fractal\Resource\Item;
 class CreatePageCommandHandler
 {
     public function handle( CreatePageCommand $createPageCommand) {
-        return $createPageCommand->execute();
-    }
 
-    public function handleApiRequest(CreatePageCommand $createPageCommand) {
 
         $pageDraft = $createPageCommand->execute();
         if (is_object($pageDraft)) {

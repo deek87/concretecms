@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Concrete\Core\API\Commands;
+namespace Concrete\Core\Foundation\Bus\Command;
 
-use Concrete\Core\API\Transformer\BasicTransformer;
+
 use Concrete\Core\Entity\Page\Template;
 use Concrete\Core\Page\Page;
 use Concrete\Core\Page\Type\Type;
 use Concrete\Core\User\User;
 use Concrete\Core\Page\Type\Composer\Control\Control;
 use Concrete\Core\Validation\SanitizeService;
-use League\Fractal\Resource\Item;
+
 
 
 class CreatePageCommand extends AbstractCommand
@@ -155,26 +155,21 @@ class CreatePageCommand extends AbstractCommand
                     $control->publishToPage($pageDraft, $this->data, $controlList);
                 }
 
-                if (!$this->publishDate instanceof \DateTime) {
-                    $this->publishDate = date_create(time());
-                }
+
 
                 $pageDraft->getPageTypeObject()->publish($pageDraft, $this->publishDate);
                 // We need to get the most recent version as $pageDraft is currently the pageDraft version.
                 $pageDraft = Page::getByID($pageDraft->getCollectionID(), 'RECENT');
-                if ($pageDraft->isPageDraft()) {
-                    $messageArray = ['message'=>t('Page Submited to Workflow'), 'page'=>$pageDraft->getJSONObject()];
-                } else {
-                    $messageArray = ['message'=>t('Page Added Successfully.'), 'page'=>$pageDraft->getJSONObject()];
-                }
+                return $pageDraft;
             } else {
-                $messageArray = ['message'=>t('Page Draft Created'), 'page'=>$pageDraft->getJSONObject()];
+                return $pageDraft;
             }
         } else {
-            $messageArray = ['message'=>t('An error occured while adding this page.')];
+            return null;
         }
 
-        return new Item($messageArray, new BasicTransformer());
+        return null;
+
 
 
     }
