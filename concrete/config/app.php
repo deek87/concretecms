@@ -1169,8 +1169,9 @@ return [
     ],
 
     'commands' => [
-        'GetSiteTreeCommand' => \Concrete\Core\Foundation\Bus\Handler\GetSiteTreeCommandHandler::class
-
+        'GetSiteTreeCommand' => \Concrete\Core\Foundation\Bus\Handler\GetSiteTreeCommandHandler::class,
+        'GetPageInfoCommand' => \Concrete\Core\Foundation\Bus\Handler\Page\GetPageInfoCommandHandler::class,
+        'CreatePageCommand' => \Concrete\Core\Foundation\Bus\Handler\CreatePageCommandHandler::class,
     ],
 
     'api' => [

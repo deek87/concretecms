@@ -80,7 +80,8 @@ class SystemRouteList implements RouteListInterface
             ->addMiddleware(ProjectorMiddleware::class)
             ->addMiddleware(APIAuthenticatorMiddleware::class)
             ->routes('api/system.php')
-            ->routes('api/site.php');
+            ->routes('api/site.php')
+            ->routes('api/page.php');
     }
 
 
