@@ -1169,6 +1169,7 @@ return [
     ],
 
     'commands' => [
+        'GetSiteTreeCommand' => \Concrete\Core\Foundation\Bus\Handler\GetSiteTreeCommandHandler::class
 
     ],
 

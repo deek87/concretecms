@@ -1,13 +1,19 @@
 <?php
 namespace Concrete\Core\Foundation\Bus\Command;
 
+
 interface CommandInterface
 {
 
     /**
-     * @return Item
+     * @return mixed
      */
     public function execute() ;
+
+    /**
+     * @return boolean
+     */
+    public function isApiRequest();
 
 
     /**

@@ -19,11 +19,13 @@ abstract class AbstractCommand implements CommandInterface
     /** @var Application $app */
     protected $app;
     /** @var array $data */
-    protected $data;
+    protected $data = [];
     /** @var  array $options */
-    protected $options;
+    protected $options = [];
     /** @var  Request $request */
     protected $request;
+    /** @var boolean $isApiRequest */
+    protected $isApiRequest = false;
 
     /**
      * AbstractCommand constructor.
@@ -32,15 +34,33 @@ abstract class AbstractCommand implements CommandInterface
     {
         $this->app = Facade::getFacadeApplication();
         $this->request = Request::getInstance();
-        $this->getDataFromRequest();
 
     }
 
 
     /**
-     * Function that gets select data or all the data from requests
+     * Determines whether or not this function is an api request
+     *
+     * @return bool
      */
-    protected function getDataFromRequest() {
+    public function isApiRequest() {
+        return $this->isApiRequest;
+    }
+
+    /**
+     * @param bool $isApiRequest
+     */
+    public function setIsApiRequest(bool $isApiRequest)
+    {
+        $this->isApiRequest = $isApiRequest;
+    }
+
+
+
+    /**
+     * Function that gets select data or all the data from a request
+     */
+    protected function getRequestData() {
         if ($this->request->getRealMethod() === 'GET') {
             // Return all of the Body Paramaters
             $this->data = $this->parseData($this->request->query->all());
