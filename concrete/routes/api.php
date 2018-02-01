@@ -4,8 +4,9 @@ defined('C5_EXECUTE') or die("Access Denied.");
 use Concrete\Core\System\Info;
 use Concrete\Core\API\Transformer\InfoTransformer;
 use League\Fractal\Resource\Item;
-use Concrete\Core\Support\Facade\Facade;
-use Concrete\Core\Foundation\Bus\Command\CreatePageCommand;
+$app = \Concrete\Core\Support\Facade\Facade::getFacadeApplication();
+
+use Concrete\Core\Application\UserInterface\Sitemap\StandardSitemapProvider;
 
 /**
  * @var $router \Concrete\Core\Routing\Router
@@ -19,4 +20,10 @@ $router->post('page/create', function () {
     $app = Facade::getFacadeApplication();
     $commandBus = $app->make('bus');
     return $commandBus->handle(new CreatePageCommand());
+});
+
+$router->get('/site/trees', function() use ($app) {
+    $provider = $app->make(StandardSitemapProvider::class);
+    $collection = $provider->getTreeCollection();
+    return new Item($collection, new \Concrete\Core\Application\UserInterface\Sitemap\TreeCollection\TreeCollectionTransformer());
 });

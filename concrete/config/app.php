@@ -1172,4 +1172,10 @@ return [
 
     ],
 
+    'api' => [
+
+        'base_url' => '/ccm/api/v1'
+
+    ]
+
 ];
