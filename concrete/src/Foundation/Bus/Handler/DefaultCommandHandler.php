@@ -3,9 +3,12 @@
 namespace Concrete\Core\Foundation\Bus\Handler;
 
 
+use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\Bus\Command\AbstractCommand;
 use Concrete\Core\API\Transformer\BasicTransformer;
+use Concrete\Core\Foundation\Bus\Command\CommandInterface;
 use League\Fractal\Resource\Item;
+use Concrete\Core\Http\Request;
 
 /**
  * The default handler for all commands without one
@@ -13,19 +16,29 @@ use League\Fractal\Resource\Item;
  * Class DefaultCommandHandler
  * @package Concrete\Core\Foundation\Bus\Handler
  */
-class DefaultCommandHandler
+class DefaultCommandHandler extends AbstractCommandHandler
 {
+    /** @var  AbstractCommand */
+    protected $command;
+    /** @var Application $app */
+    protected $app;
+    /** @var  Request $request */
+    protected $request;
 
     /**
-     * @param $command  AbstractCommand
-     * @return Item
+     * @param CommandInterface $command
+     * @return mixed
      */
-    public function handle($command) {
+    public function handle(CommandInterface $command) {
 
-        $results = $command->execute();
+        $this->command = $command;
         if ($command->isApiRequest()) {
+            $this->getRequestData();
+            $results = $command->getReturnObject();
+
             return new Item($results, new BasicTransformer());
         } else {
+            $results = $command->getReturnObject();
             return $results;
         }
     }

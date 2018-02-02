@@ -5,6 +5,10 @@ namespace Concrete\Core\API\Transformer\Page;
 use Concrete\Core\Page\Page;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Class PageTransformer
+ * @package Concrete\Core\API\Transformer\Page
+ */
 class PageTransformer extends TransformerAbstract
 {
 
@@ -17,7 +21,17 @@ class PageTransformer extends TransformerAbstract
     public function transform(Page $page)
     {
         $parent = Page::getByID($page->getCollectionParentID());
+
+            if ($page->isPageDraft() && is_object($page->getPageTypeObject())) {
+                $status = t('Page Submited to Workflow');
+            } elseif (is_object($page->getPageTypeObject())) {
+                $status = t('Page Added Successfully.');
+            } else {
+                $status = t('Page Draft');
+            }
+
         $pageArray = [
+            'page_draft_status'=>$status,
             'page_id'=>$page->getCollectionID(),
             'page_name'=>$page->getCollectionName(),
             'page_handle'=>$page->getCollectionHandle(),

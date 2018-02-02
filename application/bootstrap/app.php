@@ -66,3 +66,16 @@
  *
  * ----------------------------------------------------------------------------
  */
+
+Route::register('/test/page_create', function () use ($app) {
+    /** @var $command \Concrete\Core\Foundation\Bus\Command\Page\CreatePageCommand */
+   $command = $app->make(\Concrete\Core\Foundation\Bus\Command\Page\CreatePageCommand::class);
+   $command->setPageName('test-new command');
+   $command->setPageDescription('testing w00t this!');
+   $command->setOption('content','Testing this!');
+   $command->setOption('pageType','6');
+   $command->setData(['content'=>'testing the other thing!']);
+   $commandBus = $app->make('bus');
+   $commandBus->handle($command);
+   dd($command->getReturnObject());
+});

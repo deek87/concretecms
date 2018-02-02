@@ -1,6 +1,8 @@
 <?php
 namespace Concrete\Core\Page;
 
+use Concrete\Core\API\Resource\TransformableInterface;
+use Concrete\Core\API\Transformer\Page\PageTransformer;
 use Concrete\Core\Attribute\Key\CollectionKey;
 use Concrete\Core\Database\Connection\Connection;
 use Concrete\Core\Entity\Page\Template as TemplateEntity;
@@ -59,7 +61,7 @@ use Session;
  * The page object in Concrete encapsulates all the functionality used by a typical page and their contents
  * including blocks, page metadata, page permissions.
  */
-class Page extends Collection implements \Concrete\Core\Permission\ObjectInterface, AssignableObjectInterface, TreeInterface, SiteAggregateInterface
+class Page extends Collection implements \Concrete\Core\Permission\ObjectInterface, AssignableObjectInterface, TreeInterface, SiteAggregateInterface, TransformableInterface
 {
     protected $controller;
     protected $blocksAliasedFromMasterCollection = null;
@@ -103,6 +105,14 @@ class Page extends Collection implements \Concrete\Core\Permission\ObjectInterfa
         }
 
         return self::getByID($cID, $version);
+    }
+
+    /**
+     * @return PageTransformer
+     */
+    public function getTransformer()
+    {
+     return new PageTransformer();
     }
 
     /**

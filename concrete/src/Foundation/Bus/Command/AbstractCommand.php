@@ -15,36 +15,31 @@ use Concrete\Core\Support\Facade\Facade;
  */
 abstract class AbstractCommand implements CommandInterface
 {
-
-    /** @var Application $app */
-    protected $app;
     /** @var array $data */
     protected $data = [];
     /** @var  array $options */
     protected $options = [];
-    /** @var  Request $request */
-    protected $request;
     /** @var boolean $isApiRequest */
     protected $isApiRequest = false;
+    /** @var mixed $returnObject */
+    protected $returnObject = null;
 
     /**
-     * AbstractCommand constructor.
-     */
-    public function __construct()
-    {
-        $this->app = Facade::getFacadeApplication();
-        $this->request = Request::getInstance();
-
-    }
-
-
-    /**
-     * Determines whether or not this function is an api request
+     * Determines whether or not this command is an api request
      *
      * @return bool
      */
-    public function isApiRequest() {
+    public function isApiRequest()
+    {
         return $this->isApiRequest;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 
     /**
@@ -56,29 +51,24 @@ abstract class AbstractCommand implements CommandInterface
     }
 
 
-
     /**
-     * Function that gets select data or all the data from a request
-     */
-    protected function getRequestData() {
-        if ($this->request->getRealMethod() === 'GET') {
-            // Return all of the Body Paramaters
-            $this->data = $this->parseData($this->request->query->all());
-        } else {
-            // Return all of the Body Paramaters
-            $this->data = $this->parseData($this->request->request->all());
-        }
-    }
-
-    /**
-     * Function for manually setting options
+     * Function used to return objects
+     * Eg. PageList from GetPageListCommand
      *
-     * @param array $options
+     * @return mixed
      */
-    public function setOptions($options = [])
+    public function getReturnObject()
     {
-        $this->options = $this->parseOptions($options);
+        return $this->returnObject;
     }
+
+    /**
+     * @param $returnObject mixed
+     */
+    public function setReturnObject($returnObject = null) {
+        $this->returnObject = $returnObject;
+    }
+
 
     /**
      * Function for manually setting data
@@ -87,35 +77,55 @@ abstract class AbstractCommand implements CommandInterface
      */
     public function setData($data = [])
     {
-        $this->data = $this->parseData($data);
-    }
-
-    /**
-     * @param $data
-     * @return mixed
-     */
-    protected function parseData($data)
-    {
-
-        return $data;
-
-    }
-
-    /**
-     * @param $options
-     * @return mixed
-     */
-    protected function parseOptions($options)
-    {
-        return $options;
+        $this->data = $data;
     }
 
     /**
      * @return array
      */
-    public function getData() {
+    public function getData()
+    {
         return $this->data;
-   }
+    }
+
+    /**
+     * Function used to get one option
+     *
+     * @param $option
+     * @return mixed
+     */
+    public function getOption($option)
+    {
+        return $this->options[$option];
+    }
+
+    /**
+     *  Function used to set various options
+     *
+     * @param array $options
+     */
+    public function setOptions($options=[])
+    {
+        $this->options = array_merge($this->options, $options);
+    }
+
+    /**
+     * Function used to reset all of the options on the command
+     */
+    public function resetOptions() {
+        $this->options = [];
+    }
+
+    /**
+     * @param $option
+     * @param string $value
+     */
+    public function setOption($option, $value = '') {
+        $this->options[$option] = $value;
+    }
+
+
+
 
 
 }

@@ -6,7 +6,8 @@ use League\Tactician\Bernard\QueueMiddleware;
 use League\Tactician\CommandBus;
 use League\Tactician\Handler\CommandHandlerMiddleware;
 use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
-use Concrete\Core\Foundation\Bus\Handler\Locator\InMemoryLocator;
+//use Concrete\Core\Foundation\Bus\Handler\Locator\InMemoryLocator;
+use League\Tactician\Handler\Locator\InMemoryLocator;
 use Concrete\Core\Foundation\Bus\Handler\MethodNameInflector\HandleClassNameWithFallbackInflector;
 
 class BusServiceProvider extends ServiceProvider
@@ -37,7 +38,7 @@ class BusServiceProvider extends ServiceProvider
 
         $this->app->singleton('bus/queue', function($app) {
             $handlerMiddleware = new QueueMiddleware(
-                $this->app->make('queue/producer')
+                $app->make('queue/producer')
             );
             $commandBus = new CommandBus([$handlerMiddleware]);
             return $commandBus;
