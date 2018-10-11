@@ -264,23 +264,23 @@ class Applier
                 $otherManyAssociation = new Entry\ManyAssociation();
                 $otherManyAssociation->setAssociation($inversedAssociation);
                 $otherManyAssociation->setEntry($aEntry);
-                $otherManyAssociation->setSelectedEntries(new ArrayCollection([$entry]));
 
-            } else {
-                if (!$otherManyAssociation->getSelectedEntriesCollection()->contains($entry)) {
-                    $selectedEntries = $manyAssociation->getSelectedEntries();
-                    // If the item appears in the request (meaning we want it to be selected):
-                    if (!$selectedEntries->contains($entry)) {
-                        $associationEntry = new Entry\AssociationEntry();
-                        $associationEntry->setAssociation($manyAssociation);
-                        $associationEntry->setEntry($entry);
-                        $associationEntry->setDisplayOrder(count($selectedEntries));
-                        $otherManyAssociation->getSelectedEntriesCollection()->add($associationEntry);
-                    }
-                    $this->entityManager->persist($manyAssociation);
-                }
 
             }
+
+            if (!$otherManyAssociation->getSelectedEntriesCollection()->contains($entry)) {
+                $selectedEntries = $manyAssociation->getSelectedEntries();
+                // If the item appears in the request (meaning we want it to be selected):
+                if (!$selectedEntries->contains($entry)) {
+                    $associationEntry = new Entry\AssociationEntry();
+                    $associationEntry->setAssociation($otherManyAssociation);
+                    $associationEntry->setEntry($entry);
+                    $associationEntry->setDisplayOrder(count($selectedEntries));
+                    $otherManyAssociation->getSelectedEntriesCollection()->add($associationEntry);
+                }
+                $this->entityManager->persist($manyAssociation);
+            }
+
         }
 
 
