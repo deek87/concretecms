@@ -275,7 +275,7 @@ class Applier
                         $associationEntry->setAssociation($manyAssociation);
                         $associationEntry->setEntry($entry);
                         $associationEntry->setDisplayOrder(count($selectedEntries));
-                        $manyAssociation->getSelectedEntriesCollection()->add($associationEntry);
+                        $otherManyAssociation->getSelectedEntriesCollection()->add($associationEntry);
                     }
                     $this->entityManager->persist($manyAssociation);
                 }
