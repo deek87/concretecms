@@ -1,7 +1,5 @@
 #!/bin/bash
-apt-get update
-apt-get install apache2 libapache2-mod-fastcgi
-  # enable php-fpm
+# enable php-fpm
 cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
 a2enmod rewrite actions fastcgi alias
 echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -11,4 +9,4 @@ chown -R travis:travis /var/lib/apache2/fastcgi
 # configure apache virtual hosts
 cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
 sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
-service apache2 restart
+service start apache2
