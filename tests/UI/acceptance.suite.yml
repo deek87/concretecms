@@ -11,7 +11,7 @@ modules:
               url: 'http://concrete5-test.test'
               browser: chrome-headless
               port: 9515
-              binary: /usr/bin/google-chrome-stable
+              binary: google-chrome-stable
               window: false
 #        - PhpBrowser:
 #             url: 'http://concrete5-test.test'
