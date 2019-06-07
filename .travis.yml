@@ -28,8 +28,9 @@ matrix:
         - concrete5-test.test
         chrome: stable
         packages:
-          - apache2
-          - libapache2-mod-fastcgi
+          apt-get:
+            - apache2
+            - libapache2-mod-fastcgi
       script:
         - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test
         -
