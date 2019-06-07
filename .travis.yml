@@ -20,7 +20,9 @@ matrix:
     - name: Test UI with PHP 7.2
       php: '7.2'
       before_script:
+        - ./.travis/setup-apache.sh
         - ./.travis/composer-deps.sh
+        - ./.travis/setup-chrome.sh
       addons:
         hosts:
         - concrete5-test.test
@@ -28,9 +30,8 @@ matrix:
         packages:
           - apache2
           - libapache2-mod-fastcgi
-      install:
-        - ./.travis/setup-apache.sh
       script:
-        - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://concrete5-test.test
+        - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test
+        -
         - codecept build
         - codecept run

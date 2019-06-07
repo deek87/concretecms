@@ -9,7 +9,8 @@ modules:
     enabled:
          - WebDriver:
               url: 'http://concrete5-test.test'
-              browser: 'chrome'
+              browser: chrome-headless
+              port: 9515
 #        - PhpBrowser:
 #             url: 'http://concrete5-test.test'
 #        - \Helper\Acceptance
