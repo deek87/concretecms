@@ -1,0 +1,12 @@
+paths:
+  tests: tests/UI
+  output: tests/UI/_output
+  data: tests/UI/_data
+  support: tests/UI/_support
+  envs: tests/UI/_envs
+actor_suffix: Tester
+settings:
+  bootstrap: ../../_bootstrap_ui.php
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed
