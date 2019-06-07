@@ -16,3 +16,5 @@ chown -R travis:travis /var/lib/apache2/fastcgi
 cp -f $SCRIPT_DIR/concrete5.conf /etc/apache2/sites-available/000-default.conf
 sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 service apache2 restart
+echo "CHECK C5 Response"
+curl concrete5-test.test
