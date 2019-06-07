@@ -31,5 +31,5 @@ matrix:
         chrome: stable
       script:
         #         - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test
-        - codecept build
-        - codecept run
+        - concrete/vendor/codeception/codeception/codecept build
+        - concrete/vendor/codeception/codeception/codecept run
