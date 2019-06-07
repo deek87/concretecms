@@ -21,7 +21,7 @@ matrix:
       php: '7.2'
       before_install:
         - "sudo ./.travis/setup-apache.sh"
-        - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+        #- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
       before_script:
         - ./.travis/composer-deps.sh
         - ./.travis/setup-chrome.sh
@@ -31,6 +31,6 @@ matrix:
         chrome: stable
       script:
         - ./chromedriver --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
-        - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test 2>&1&
+        - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test &
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run

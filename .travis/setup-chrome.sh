@@ -5,5 +5,5 @@ unzip -o -q chromedriver_linux64.zip
 echo "unzip complete"
 chmod 755 chromedriver
 export DISPLAY=:99.0
-sh -e /etc/init.d/xvfb start
-sleep 3 # give xvfb some time to start
+#sh -e /etc/init.d/xvfb start
+#sleep 3 # give xvfb some time to start
