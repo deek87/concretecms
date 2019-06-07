@@ -1,5 +1,6 @@
 #!/bin/bash
 # enable php-fpm
+apt-get apache2 libapache2-mod-fastcgi
 cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
 a2enmod rewrite actions fastcgi alias proxy_fcgi
 echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
