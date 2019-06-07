@@ -31,6 +31,5 @@ matrix:
         chrome: stable
       script:
         - ./chromedriver --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
-        - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9515 http://concrete5-test.test &
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run
