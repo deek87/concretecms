@@ -10,7 +10,8 @@ a2enmod rewrite actions fastcgi alias proxy_fcgi
 echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
 sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
 chown -R travis:travis /var/lib/apache2/fastcgi
- ~/.phpenv/versions/$TRAVIS_PHP_VERSION/sbin/php-fpm
+echo "start php-fpm"
+service ~/.phpenv/versions/$TRAVIS_PHP_VERSION/sbin/php-fpm restart
 # configure apache virtual hosts
 
 cp -f $SCRIPT_DIR/concrete5.conf /etc/apache2/sites-available/000-default.conf
