@@ -4,6 +4,9 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 apt-get update
 apt-get install -y apache2 libapache2-mod-fastcgi
 echo "PHP - $TRAVIS_PHP_VERSION"
+touch /var/run/php/php-fpm.sock
+chmod 660
+chown travis:travis /var/run/php/php-fpm.sock
 cp ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf.default ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf
 cp $SCRIPT_DIR/php-fpm.conf ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.d/zzz-c5.conf
 a2enmod rewrite actions fastcgi alias proxy_fcgi
@@ -16,8 +19,6 @@ echo "start php-fpm"
 
 cp -f $SCRIPT_DIR/concrete5.conf /etc/apache2/sites-available/000-default.conf
 sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
-a2enconf php7.2
-a2enconf php7.2-fpm
 service apache2 restart
 echo "CHECK C5 Response"
 curl concrete5-test.test
