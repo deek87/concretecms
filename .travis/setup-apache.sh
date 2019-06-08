@@ -4,9 +4,9 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 apt-get update
 apt-get install -y apache2 libapache2-mod-fastcgi
 echo "PHP - $TRAVIS_PHP_VERSION"
-touch /var/run/php/php-fpm.sock
-chmod 660
-chown travis:travis /var/run/php/php-fpm.sock
+mkdir -p /var/run/php-fpm
+chmod 775 /var/run/php-fpm
+chown travis:travis /var/run/php-fpm
 cp ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf.default ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf
 cp $SCRIPT_DIR/php-fpm.conf ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.d/zzz-c5.conf
 a2enmod rewrite actions fastcgi alias proxy_fcgi
