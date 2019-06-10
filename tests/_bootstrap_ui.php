@@ -31,9 +31,32 @@ if ($fs->isDirectory(DIR_CONFIG_SITE . '/doctrine')) {
     $fs->deleteDirectory(DIR_CONFIG_SITE . '/doctrine');
 }
 
+
+
 // Begin concrete5 startup.
 $app = require DIR_BASE_CORE . '/bootstrap/start.php';
 /* @var Concrete\Core\Application\Application $app */
+/** @var \Concrete\Core\Database\DatabaseManager $database */
+$database = $app->make('database');
+$factory = $database->getFactory();
+$cn = $factory->createConnection(['travisWithoutDB' => [
+    'driver' => 'c5_pdo_mysql',
+    'server' => '127.0.0.1',
+    'username' => 'travis',
+    'password' => '',
+    'charset' => 'utf8',
+    'driverOptions' => [
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'",
+    ]]]);
+
+$cn->connect();
+if (!$cn->isConnected()) {
+    throw new Exception('Unable to connect to test database, please create a user "travis" with no password with full privileges to a database "concrete5_tests"');
+}
+$cn->query('DROP DATABASE IF EXISTS concrete5_tests');
+$cn->query('CREATE DATABASE concrete5_tests');
+$cn->close();
+
 
 // Configure error reporting (test more strictly than core settings)
 error_reporting(E_ALL & ~E_STRICT & ~E_DEPRECATED);
