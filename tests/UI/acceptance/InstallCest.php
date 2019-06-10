@@ -80,6 +80,6 @@ class InstallCest
         $I->waitForText('Setting site permissions.');
         $I->waitForText('Finishing.');
         */
-        $I->waitForText("Installation Complete",60);
+        $I->waitForText("Installation Complete.",60);
     }
 }
