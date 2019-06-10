@@ -39,7 +39,7 @@ $app = require DIR_BASE_CORE . '/bootstrap/start.php';
 /** @var \Concrete\Core\Database\DatabaseManager $database */
 $database = $app->make('database');
 $factory = $database->getFactory();
-$cn = $factory->createConnection(['travisWithoutDB' => [
+$cn = $factory->make([
     'driver' => 'c5_pdo_mysql',
     'server' => '127.0.0.1',
     'username' => 'travis',
@@ -47,7 +47,7 @@ $cn = $factory->createConnection(['travisWithoutDB' => [
     'charset' => 'utf8',
     'driverOptions' => [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'",
-    ]]]);
+    ]],'travisNoDB');
 
 $cn->connect();
 if (!$cn->isConnected()) {
