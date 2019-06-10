@@ -43,9 +43,6 @@ class InstallCest
         $I->fillField('DB_SERVER','localhost');
         $I->fillField('DB_USERNAME','travis');
         $I->clickWithLeftButton('.btn-primary');
-        $I->seeElement('#ignore-warnings');
-        $I->checkOption('#ignore-warnings');
-        $I->clickWithLeftButton('.btn-primary');
     }
 
     public function checkInstallTime(AcceptanceTester $I) {
