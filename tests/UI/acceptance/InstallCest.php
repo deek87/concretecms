@@ -80,7 +80,11 @@ class InstallCest
         $I->waitForText('Setting site permissions.');
         $I->waitForText('Finishing.');
         */
-        $I->waitForElementVisible('#success-message',60);
-        $I->waitForText("Installation Complete",60,'div.ccm-install-title ul.breadcrumb li.active');
+        $I->waitForText("Installation Complete",60);
+    }
+
+    public function _failed(\AcceptanceTester $I)
+    {
+        $I->canSeeElement('.alert-danger');
     }
 }
