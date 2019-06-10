@@ -40,8 +40,9 @@ class InstallCest
     public function enterDetails(AcceptanceTester $I) {
         $I->fillField('uPassword','RandomPassword1');
         $I->fillField('uPasswordConfirm','RandomPassword1');
-        $I->fillField('DB_SERVER','localhost');
+        $I->fillField('DB_SERVER','127.0.0.1');
         $I->fillField('DB_USERNAME','travis');
+        $I->fillField('DB_DATABASE','concrete5_tests');
         $I->clickWithLeftButton('.btn-primary');
     }
 
@@ -86,5 +87,6 @@ class InstallCest
     public function _failed(\AcceptanceTester $I)
     {
         $I->canSeeElement('.alert-danger');
+        echo $I->executeJS('return $(.alert-danger).html()');
     }
 }
