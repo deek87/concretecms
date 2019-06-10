@@ -32,5 +32,4 @@ matrix:
       script:
         - ./chromedriver --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
         - concrete/vendor/codeception/codeception/codecept build
-        - concrete/vendor/codeception/codeception/codecept run -vv || true
-        - cat /home/travis/build/deek87/concrete5/tests/UI/_output/InstallCest.checkInstallTime.fail.html
+        - concrete/vendor/codeception/codeception/codecept run -vv

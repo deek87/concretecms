@@ -44,10 +44,12 @@ class InstallCest
         $I->fillField('DB_USERNAME','travis');
         $I->fillField('DB_DATABASE','concrete5_tests');
         $I->clickWithLeftButton('.btn-primary');
+        $I->seeElement('#ignore-warnings');
+        $I->checkOption('#ignore-warnings');
     }
 
     public function checkInstallTime(AcceptanceTester $I) {
-
+        $I->clickWithLeftButton('.btn-primary');
         /* Actually too fast to see the text
          * $I->waitForText('Starting installation and creating directories.');
         $I->waitForText('Creating database tables.');
@@ -87,6 +89,5 @@ class InstallCest
     public function _failed(\AcceptanceTester $I)
     {
         $I->canSeeElement('.alert-danger');
-        echo $I->executeJS('return $(.alert-danger).html()');
     }
 }
