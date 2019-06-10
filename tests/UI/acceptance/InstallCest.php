@@ -83,7 +83,7 @@ class InstallCest
         $I->waitForText('Setting site permissions.');
         $I->waitForText('Finishing.');
         */
-        $I->waitForText("Installation Complete",60);
+        $I->waitForText("Installation Complete",120);
     }
 
     public function _failed(\AcceptanceTester $I)
