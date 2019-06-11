@@ -50,37 +50,6 @@ class InstallCest
 
     public function checkInstallTime(AcceptanceTester $I) {
         $I->clickWithLeftButton('.btn-primary');
-        $I->waitForText('Starting installation and creating directories.',120,'#install-progress-summary');
-        $I->waitForText('Creating database tables.',120,'#install-progress-summary');
-        $I->waitForText('Creating site.',120,'#install-progress-summary');
-        $I->waitForText('Adding admin user.',120,'#install-progress-summary');
-        $I->waitForText('Installing permissions & workflow.',120,'#install-progress-summary');
-        $I->waitForText('Installing Custom Data Objects.',120,'#install-progress-summary');
-        $I->waitForText('Creating home page.',120,'#install-progress-summary');
-        $I->waitForText('Installing attributes.',120,'#install-progress-summary');
-        $I->waitForText('Adding Basic block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Navigation block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Form block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Express block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Social block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Calendar block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Multimedia block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding Desktop block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding other block types.',120,'#install-progress-summary');
-        $I->waitForText('Adding gathering data sources.',120,'#install-progress-summary');
-        $I->waitForText('Page type basic setup.',120,'#install-progress-summary');
-        $I->waitForText('Adding themes.',120,'#install-progress-summary');
-        $I->waitForText('Installing automated jobs.',120,'#install-progress-summary');
-        $I->waitForText('Installing dashboard.',180,'#install-progress-summary');
-        $I->waitForText('Installing login and registration pages.',180,'#install-progress-summary');
-        $I->waitForText('Adding image editor functionality.',180,'#install-progress-summary');
-        $I->waitForText('Configuring site.',180,'#install-progress-summary');
-        $I->waitForText('Importing files.',180,'#install-progress-summary');
-        $I->waitForText('Adding pages and content.',180,'#install-progress-summary');
-        $I->waitForText('Adding desktops.',180,'#install-progress-summary');
-        $I->waitForText('Installing API.',180,'#install-progress-summary');
-        $I->waitForText('Setting site permissions.',180,'#install-progress-summary');
-        $I->waitForText('Finishing.',180,'#install-progress-summary');
         $I->waitForText("Installation Complete",180);
     }
 
