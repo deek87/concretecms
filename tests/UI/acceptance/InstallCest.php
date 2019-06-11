@@ -71,17 +71,17 @@ class InstallCest
         $I->waitForText('Page type basic setup.',120,'#install-progress-summary');
         $I->waitForText('Adding themes.',120,'#install-progress-summary');
         $I->waitForText('Installing automated jobs.',120,'#install-progress-summary');
-        $I->waitForText('Installing dashboard.',120,'#install-progress-summary');
-        $I->waitForText('Installing login and registration pages.',120,'#install-progress-summary');
-        $I->waitForText('Adding image editor functionality.',120,'#install-progress-summary');
-        $I->waitForText('Configuring site.',120,'#install-progress-summary');
-        $I->waitForText('Importing files.',120,'#install-progress-summary');
-        $I->waitForText('Adding pages and content.',120,'#install-progress-summary');
-        $I->waitForText('Adding desktops.',120,'#install-progress-summary');
-        //$I->waitForText('Installing API.',120,'#install-progress-summary'); -- too quick?
-        $I->waitForText('Setting site permissions.',120,'#install-progress-summary');
-        $I->waitForText('Finishing.',120,'#install-progress-summary');
-        $I->waitForText("Installation Complete",120);
+        $I->waitForText('Installing dashboard.',180,'#install-progress-summary');
+        $I->waitForText('Installing login and registration pages.',180,'#install-progress-summary');
+        $I->waitForText('Adding image editor functionality.',180,'#install-progress-summary');
+        $I->waitForText('Configuring site.',180,'#install-progress-summary');
+        $I->waitForText('Importing files.',180,'#install-progress-summary');
+        $I->waitForText('Adding pages and content.',180,'#install-progress-summary');
+        $I->waitForText('Adding desktops.',180,'#install-progress-summary');
+        $I->waitForText('Installing API.',180,'#install-progress-summary');
+        $I->waitForText('Setting site permissions.',180,'#install-progress-summary');
+        $I->waitForText('Finishing.',180,'#install-progress-summary');
+        $I->waitForText("Installation Complete",180);
     }
 
     public function _failed(\AcceptanceTester $I)
