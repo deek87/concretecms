@@ -50,8 +50,7 @@ class InstallCest
 
     public function checkInstallTime(AcceptanceTester $I) {
         $I->clickWithLeftButton('.btn-primary');
-        /* Actually too fast to see the text
-         * $I->waitForText('Starting installation and creating directories.');
+        $I->waitForText('Starting installation and creating directories.');
         $I->waitForText('Creating database tables.');
         $I->waitForText('Creating site.');
         $I->waitForText('Adding admin user.');
@@ -82,7 +81,6 @@ class InstallCest
         $I->waitForText('Installing API.');
         $I->waitForText('Setting site permissions.');
         $I->waitForText('Finishing.');
-        */
         $I->waitForText("Installation Complete",120);
     }
 
