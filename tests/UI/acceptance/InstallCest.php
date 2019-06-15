@@ -1,5 +1,8 @@
 <?php
 
+namespace Concrete\UITests;
+
+use AcceptanceTester;
 
 class InstallCest
 {
@@ -32,8 +35,7 @@ class InstallCest
         $I->checkOption('form input[name="privacy"]');
         $I->seeCheckboxIsChecked('form [name="privacy"]');
         $I->clickWithLeftButton('.btn-primary');
-        $I->wait(5);
-        $I->see('The two passwords provided do not match.');
+        $I->waitForText('The two passwords provided do not match.',20);
 
     }
 
@@ -51,6 +53,14 @@ class InstallCest
     public function checkInstallTime(AcceptanceTester $I) {
         $I->clickWithLeftButton('.btn-primary');
         $I->waitForText("Installation Complete",180);
+        $I->saveSessionSnapshot('login');
+        $I->click('Edit Your Site');
+
+        $I->waitForText('Learn the basics');
+        // Fix for chrome deleting cookies on each test
+        AcceptanceTester::$sessionCookie = $I->grabCookie('CONCRETE5');
+        AcceptanceTester::$cookies = $I->grabCookieObject();
+        $I->click('button.ui-dialog-titlebar-close');
     }
 
     public function _failed(\AcceptanceTester $I)

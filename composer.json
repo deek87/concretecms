@@ -43,12 +43,18 @@
       "replace": false,
       "merge-extra": false
     },
+    "patches" : {
+      "codeception/codeception" : {
+        "fix issue with chromedriver missing defaults": "https://github.com/Codeception/Codeception/commit/ec2fc7362ceea866fb9f5e71181eaa6cfeded8ac.patch"
+      }
+    },
     "allow-subpatches": [
       "concrete5/dependency-patches"
     ]
   },
   "autoload-dev": {
     "psr-4": {
+      "Concrete\\UITests\\": "tests/UI/acceptance/",
       "Concrete\\Tests\\": "tests/tests/",
       "Concrete\\TestHelpers\\": "tests/helpers/"
     }

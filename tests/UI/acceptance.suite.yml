@@ -20,4 +20,4 @@ modules:
                     window_size: false
 #        - PhpBrowser:
 #             url: 'http://concrete5-test.test'
-#        - \Helper\Acceptance
+         - \Helper\Acceptance

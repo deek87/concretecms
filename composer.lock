@@ -7122,7 +7122,7 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.36con",
+            "version": "4.8.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
