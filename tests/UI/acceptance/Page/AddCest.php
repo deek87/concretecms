@@ -66,7 +66,7 @@ class AddCest {
         $I->waitForElement('div.ccm-file-selector-choose-new');
         $I->clickWithLeftButton('div.ccm-file-selector-choose-new');
         $I->waitForElement('//div[contains(@class,"ccm-ui")][@data-header="file-manager"]');
-        $I->see('bridge.jpg');
+        $I->waitForElement('//tr[@data-file-manager-tree-node-type="file"][.//*[contains(text(), "bridge.jpg")]]');
         $I->clickWithLeftButton('//tr[@data-file-manager-tree-node-type="file"][.//*[contains(text(), "bridge.jpg")]]');
         $I->waitForText('Add');
         $I->click('Add');
