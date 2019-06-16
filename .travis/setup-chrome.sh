@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Download chrome driver and unzip it"
-wget -c -nc --retry-connrefused --tries=0 http://chromedriver.storage.googleapis.com/74.0.3729.6/chromedriver_linux64.zip
+wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip
 unzip -o -q chromedriver_linux64.zip
 echo "unzip complete"
 chmod 755 chromedriver
