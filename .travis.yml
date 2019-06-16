@@ -40,4 +40,4 @@ matrix:
         - ./chromedriver --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run || true
-        - cat tests/UI/_output/Concrete.UITests.Page.AddCest.dragAndDropBlock.fail.html || true
+        - cat tests/UI/_output/Concrete.UITests.Page.AddCest.publishAndVist.fail.html || true
