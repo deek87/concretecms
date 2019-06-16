@@ -97,7 +97,7 @@ objDiv.scrollTop = objDiv.scrollHeight;");
         $I->click('Publish Page');
         $I->waitForText('XYZ TESTING EXTRA TEST');
         $I->logout();
-        $I->amOnPage('/test-page');
+        $I->amOnPage('/index.php/test-page');
         $I->waitForText('XYZ TESTING EXTRA TEST');
 
     }
