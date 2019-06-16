@@ -17,6 +17,7 @@ modules:
                               - "--headless"
                               - "--disable-gpu"
                               - window-size=1920x1080
+                         w3c:  false
                     window_size: false
 #        - PhpBrowser:
 #             url: 'http://concrete5-test.test'
