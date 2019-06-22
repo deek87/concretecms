@@ -47,7 +47,7 @@ class AcceptanceTester extends \Codeception\Actor
         }
 
         // logging in
-        $this->amOnPage('/login');
+        $this->amOnPage('/index.php/login');
         $this->fillField('uName', $username);
         $this->fillField('uPassword', $password);
         $this->click('Log in');
