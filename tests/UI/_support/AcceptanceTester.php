@@ -29,7 +29,7 @@ class AcceptanceTester extends \Codeception\Actor
 
     public function login($username = 'admin', $password = 'RandomPassword1') {
         // if snapshot exists - skipping login
-        if ($this->loadSessionSnapshot('login')) {
+        if ($this->loadSessionSnapshot('login_' . $username)) {
             if (empty($this->grabCookie('CONCRETE5'))) {
 
                 if (empty(self::$sessionCookie)) {
@@ -40,7 +40,7 @@ class AcceptanceTester extends \Codeception\Actor
                 }
 
                 $this->amOnPage(self::$currentUrl);
-                $this->saveSessionSnapshot('login');
+                $this->saveSessionSnapshot('login_' . $username);
             }
 
             return true;
@@ -56,7 +56,7 @@ class AcceptanceTester extends \Codeception\Actor
         self::$cookies = $this->grabCookieObject();
         // saving snapshot
         $this->amOnPage('/');
-        $this->saveSessionSnapshot('login');
+        $this->saveSessionSnapshot('login_' . $username);
 
 
         return true;

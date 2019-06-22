@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\UITests;
+namespace Concrete\UITests\Install;
 
 use AcceptanceTester;
 
@@ -53,7 +53,7 @@ class InstallCest
     public function checkInstallTime(AcceptanceTester $I) {
         $I->clickWithLeftButton('.btn-primary');
         $I->waitForText("Installation Complete",180);
-        $I->saveSessionSnapshot('login');
+        $I->saveSessionSnapshot('login_admin');
         $I->click('Edit Your Site');
 
         $I->waitForText('Learn the basics');

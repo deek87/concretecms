@@ -54,7 +54,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Concrete\\UITests\\": "tests/UI/acceptance/",
+      "Concrete\\UITests\\": "tests/UI/",
       "Concrete\\Tests\\": "tests/tests/",
       "Concrete\\TestHelpers\\": "tests/helpers/"
     }
