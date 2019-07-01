@@ -10,7 +10,7 @@ modules:
          - WebDriver:
               url: 'http://concrete5-test.test'
               browser: chrome-headless
-              port: 9515
+              port: 4444
               capabilities:
                     chromeOptions:
                          args:

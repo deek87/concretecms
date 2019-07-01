@@ -111,7 +111,23 @@ matrix:
         - concrete5-test.test
         chrome: stable
       script:
-        - ./chromedriver --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
+        - ./chromedriver --port=4444 --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
+        - concrete/vendor/codeception/codeception/codecept build
+        - concrete/vendor/codeception/codeception/codecept run -vvv || true
+        - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
+    - name: Test UI with PHP 7.2 - selinium
+      php: '7.2'
+      before_install:
+        - "sudo ./.travis/setup-apache.sh"
+      before_script:
+        - ./.travis/composer-deps.sh
+      services: docker
+      addons:
+        hosts:
+          - concrete5-test.test
+        chrome: stable
+      script:
+        - docker run --network="host" -v /dev/shm:/dev/shm selenium/standalone-chrome
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run -vvv || true
         - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
