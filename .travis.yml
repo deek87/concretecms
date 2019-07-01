@@ -127,7 +127,9 @@ matrix:
           - concrete5-test.test
         chrome: stable
       script:
-        - docker run -d --network="host" -v /dev/shm:/dev/shm selenium/standalone-chrome
+        - docker run -d -p 4444:4444 --add-host="concrete5-test.test:172.17.0.2" --name="chrome-driver" -v /dev/shm:/dev/shm selenium/standalone-chrome
         - concrete/vendor/codeception/codeception/codecept build
-        - concrete/vendor/codeception/codeception/codecept run -vvv || true
+        - concrete/vendor/codeception/codeception/codecept run -vvv --env chrome || true
         - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
+        - docker logs chrome-driver
+        - docker inspect chrome-drive

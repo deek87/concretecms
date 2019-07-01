@@ -21,3 +21,9 @@ modules:
 #        - PhpBrowser:
 #             url: 'http://concrete5-test.test'
          - \Helper\Acceptance
+env:
+  chrome:
+    modules:
+      config:
+        WebDriver:
+          host: 0.0.0.0
