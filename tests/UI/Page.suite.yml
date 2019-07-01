@@ -27,3 +27,4 @@ env:
       config:
         WebDriver:
           host: 0.0.0.0
+          browser: chrome
