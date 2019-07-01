@@ -127,7 +127,7 @@ matrix:
           - concrete5-test.test
         chrome: stable
       script:
-        - docker run --network="host" -v /dev/shm:/dev/shm selenium/standalone-chrome
+        - docker run -d --network="host" -v /dev/shm:/dev/shm selenium/standalone-chrome
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run -vvv || true
         - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
