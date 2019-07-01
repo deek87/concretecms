@@ -63,8 +63,4 @@ class InstallCest
         $I->click('button.ui-dialog-titlebar-close');
     }
 
-    public function _failed(\AcceptanceTester $I)
-    {
-        $I->canSeeElement('.alert-danger');
-    }
 }

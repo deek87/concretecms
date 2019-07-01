@@ -46,6 +46,9 @@
     "patches" : {
       "codeception/codeception:2.4.1" : {
         "chromeriver defaults": "https://github.com/Codeception/Codeception/commit/ec2fc7362ceea866fb9f5e71181eaa6cfeded8ac.patch"
+      },
+      "facebook/php-webdriver:1.4.1" : {
+        "w3c issues": "https://patch-diff.githubusercontent.com/raw/facebook/php-webdriver/pull/640.patch"
       }
     },
     "allow-subpatches": [
