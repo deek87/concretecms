@@ -113,11 +113,11 @@ matrix:
       script:
         - ./chromedriver --port=4444 --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
         - concrete/vendor/codeception/codeception/codecept build
-        - concrete/vendor/codeception/codeception/codecept run -vvv || true
-        - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
+        - concrete/vendor/codeception/codeception/codecept run
     - name: Test UI with PHP 7.2 - selinium
       php: '7.2'
       before_install:
+        - docker run -d -p 4444:4444 --add-host="concrete5-test.test:172.17.0.2" --name="chrome-driver" -v /dev/shm:/dev/shm selenium/standalone-chrome
         - "sudo ./.travis/setup-apache.sh"
       before_script:
         - ./.travis/composer-deps.sh
@@ -127,9 +127,9 @@ matrix:
           - concrete5-test.test
         chrome: stable
       script:
-        - docker run -d -p 4444:4444 --add-host="concrete5-test.test:172.17.0.2" --name="chrome-driver" -v /dev/shm:/dev/shm selenium/standalone-chrome
         - concrete/vendor/codeception/codeception/codecept build
         - concrete/vendor/codeception/codeception/codecept run -vvv --env chrome || true
         - cat tests/UI/_output/Concrete.UITests.Page.AddCest.loadNewPage.fail.html || true
         - docker logs chrome-driver
-        - docker inspect chrome-drive
+        - docker inspect chrome-driver
+        - docker container ls
