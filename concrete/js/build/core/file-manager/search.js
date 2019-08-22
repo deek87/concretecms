@@ -215,36 +215,28 @@
         }
     };
 
-    ConcreteFileManager.onDragOver = function (e) {
-        if (ConcreteFileManager.openingFileImporter) {
-            return;
-        }
-        var dataTransfer = e.originalEvent && e.originalEvent.dataTransfer;
-        if (dataTransfer && $.inArray('Files', dataTransfer.types) !== -1) {
-            if ($('div.ccm-file-manager-import-files').length === 0) {
-                e.stopPropagation();
-                $('a[data-dialog=add-files]').trigger('click');
-            }
-        }
-    };
     ConcreteFileManager.prototype.setupFileUploads = function() {
         var my = this;
-        $(document)
-            .off('dragover', ConcreteFileManager.onDragOver)
-            .on('dragover', ConcreteFileManager.onDragOver)
-        ;
+        my.fileUploaderOptions = {
+        	folderID: function() {
+        		return my.currentFolder;
+        	}
+        };
+        window.ccm_fileUploader.start(my.fileUploaderOptions);
+        var $dialog = this.$element.closest('.ui-dialog-content');
+        if ($dialog.length !== 0) {
+        	$dialog.on('dialogclose', function() {
+        		window.ccm_fileUploader.stop(my.fileUploaderOptions);
+        	});
+        }
         $('a[data-dialog=add-files]').on('click', function(e) {
-            ConcreteFileManager.openingFileImporter = true;
             e.preventDefault();
             $.fn.dialog.open({
                 width: 620,
                 height: 400,
                 modal: true,
                 title: ccmi18n_filemanager.addFiles,
-                href: CCM_DISPATCHER_FILENAME + '/ccm/system/dialogs/file/import?currentFolder=' + my.currentFolder,
-                onOpen: function() {
-                    ConcreteFileManager.openingFileImporter = false;
-                }
+                href: CCM_DISPATCHER_FILENAME + '/ccm/system/dialogs/file/import?currentFolder=' + my.currentFolder
             });
         });
 
@@ -315,11 +307,6 @@
         ConcreteEvent.subscribe('ConcreteTreeDeleteTreeNode.concreteTree', function(e, r) {
             my.reloadFolder();
         });
-        ConcreteEvent.unsubscribe('SavedSearchCreated');
-        ConcreteEvent.subscribe('SavedSearchCreated', function(e, data) {
-            my.ajaxUpdate(data.search.baseUrl, {});
-
-        });
 
         ConcreteEvent.unsubscribe('FileManagerUpdateFileProperties');
         ConcreteEvent.subscribe('FileManagerUpdateFileProperties', function(e, r) {
@@ -351,7 +338,7 @@
                 placement: 'auto',
                 trigger: 'manual'
             });
-            $(this).hover(function(){
+            my.hover(function(){
                 var image = new Image();
                 image.src = my.data('hover-image');
                 if (image.complete) {
@@ -362,6 +349,9 @@
                         my.popover('toggle');
                     });
                 }
+            });
+            my.closest('.ui-dialog').on('dialogclose', function() {
+                my.popover('destroy');
             });
         });
     };
@@ -396,9 +386,11 @@
 
         // Hide clear if we're not in choose mode
         if (my.options.selectMode != 'choose') {
+            var $choose = $menu.find('a[data-file-manager-action=choose-new-file]').parent();
             var $clear = $menu.find('a[data-file-manager-action=clear]').parent();
-            $clear.next('li.divider').remove();
+            $choose.next('li.divider').remove();
             $clear.remove();
+            $choose.remove();
         }
 
     };
