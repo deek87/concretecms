@@ -121,7 +121,7 @@ matrix:
       script:
         - ./chromedriver --port=4444 --url-base=wd/hub --whitelisted-ips=  > /dev/null 2>&1&
         - concrete/vendor/codeception/codeception/codecept build
-        - concrete/vendor/codeception/codeception/codecept run --vv
+        - concrete/vendor/codeception/codeception/codecept run -vv
     - name: Test UI with PHP 7.2 - selinium chrome
       php: '7.2'
       before_install:
