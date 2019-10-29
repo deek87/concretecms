@@ -117,14 +117,7 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         $property->setAccessible(true);
         /** @var  $redisClass  \RedisArray */
         $redisClass = $property->getValue($redis_handler);
-        $hosts = $redisClass->_hosts();
-        var_dump($hosts);
-        var_dump($redisClass->getOption('hosts'));
-        var_dump($this->getRedisHosts($redisConfig));
-        var_dump($redisClass);
-        $this->assertSame($hosts, $this->getRedisHosts($redisConfig));
-
-
+        $this->assertSame($redisClass->_hosts(), $this->getRedisHosts($redisConfig[0]));
         $this->assertInstanceOf(\RedisArray::class, $redisClass);
         if (version_compare(phpversion('redis'), '4.9.9', '<=')) {
             // In redis versions below 5.0 ping will return +PONG
