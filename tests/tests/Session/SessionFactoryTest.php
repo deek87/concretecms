@@ -102,9 +102,10 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         /** @var \Redis $redisClass */
 
         $this->assertInstanceOf(\Redis::class, $redisClass);
-        if (version_compare(phpversion('redis'), '5.0.0', '<')) {
+        if (version_compare(phpversion('redis'), '5.0.0')) {
             // In redis versions below 5.0 ping will return +PONG
             // PHP 5.x only supports up to 4.3.0
+            $this->assertSame('+PONG', $redisClass->ping());
         } else {
             $this->assertTrue($redisClass->ping());
         }

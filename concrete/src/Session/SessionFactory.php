@@ -329,10 +329,11 @@ class SessionFactory implements SessionFactoryInterface
                 $serverArray[] = $serverString;
             }
             $options = ['connect_timeout' => $ttl];
-            if ($password !== null) {
-                $options['auth'] = $password;
-            }
+
             $redis = $this->app->make(RedisArray::class, [$serverArray, $options]);
+            if ($password !== null) {
+                $redis->auth($password);
+            }
         }
 
         return $redis;
