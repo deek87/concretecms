@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Installing php-redis"
+pecl uninstall redis
 INSTALL_REDIS=$(pecl install $REDIS_VERSION <<< '')
 if [[ "$INSTALL_REDIS" =~ "redis is already installed" ]]; then
   echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini

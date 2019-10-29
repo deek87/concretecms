@@ -145,7 +145,7 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         if (version_compare(phpversion('redis'), '4.9.9', '<=')) {
             // In redis versions below 5.0 ping will return +PONG
             // PHP 5.x only supports up to 4.3.0
-            $this->assertSame('+PONG', $redisClass->ping());
+            $this->assertSame(['127.0.0.1:6379'=>'+PONG','127.0.0.1:6380'=>'+PONG'], $redisClass->ping());
         } else {
             $this->assertTrue($redisClass->ping());
         }
