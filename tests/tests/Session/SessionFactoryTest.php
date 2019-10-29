@@ -138,6 +138,7 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         /** @var  $redisClass  \RedisArray */
 
         $this->assertInstanceOf(\RedisArray::class, $redisClass);
+        $redisClass->ping(); //RedisArray bug fix...
 
         $this->assertSame($redisClass->_hosts(), $this->getRedisHosts($redisConfig[0]));
 
