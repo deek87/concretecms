@@ -333,6 +333,10 @@ class SessionFactory implements SessionFactoryInterface
                 $options['auth'] = $password;
             }
             $redis = $this->app->make(RedisArray::class, [$serverArray, $options]);
+            if ($password !== null) {
+                // Fix for older versions of redis array
+                $redis->auth($password);
+            }
         }
 
         return $redis;
