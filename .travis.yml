@@ -10,7 +10,7 @@ cache:
 notifications:
   email: false
 env:
-  - REDIS_VERSION=redis
+  - REDIS_VERSION=redis-4.3.0
 
 # Job list
 matrix:
