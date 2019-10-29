@@ -119,8 +119,11 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         $redisClass = $property->getValue($redis_handler);
         $hosts = $redisClass->_hosts();
         var_dump($hosts);
+        var_dump($redisClass->getOption('hosts'));
+        var_dump($this->getRedisHosts($redisConfig));
+        var_dump($redisClass);
         $this->assertSame($hosts, $this->getRedisHosts($redisConfig));
-        var_dump($redisClass->getOption('auth'));
+
 
         $this->assertInstanceOf(\RedisArray::class, $redisClass);
         if (version_compare(phpversion('redis'), '4.9.9', '<=')) {
