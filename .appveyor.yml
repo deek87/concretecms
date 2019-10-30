@@ -27,7 +27,8 @@ init:
   - set MYSQL_PWD=Password12!
   - nuget install redis-64 -excludeversion
   - redis-64\tools\redis-server.exe --service-install
-  - redis-64\tools\redis-server.exe --service-start
+  - ps: Start-Process -NoNewWindow redis-64\tools\redis-server.exe --port 6379 --requirepass "randomredis"
+  - ps: Start-Process -NoNewWindow redis-64\tools\redis-server.exe --port 6380 --requirepass "randomredis"
   - ps: >-
         InstallPeclExtension `
           -Name       redis `
