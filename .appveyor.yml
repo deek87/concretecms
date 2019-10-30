@@ -25,6 +25,22 @@ services:
 init:
   - set PATH=C:\Program Files\MySQL\MySQL Server 5.7\bin;%PATH%
   - set MYSQL_PWD=Password12!
+  - nuget install redis-64 -excludeversion
+  - redis-64\tools\redis-server.exe --service-install
+  - redis-64\tools\redis-server.exe --service-start
+  - ps: >-
+        InstallPeclExtension `
+          -Name       redis `
+          -Version    4.3.0 `
+          -PhpVersion $Env:PHP_VERSION `
+          -BuildType  $Env:BUILD_TYPE `
+          -VC         $Env:VC_VERSION `
+          -Platform   $Env:PLATFORM
+
+        # An example to enable PHP extension
+  - ps: >-
+      EnablePhpExtension `
+        -Name          redis `
 
 install:
   - ps: .\.appveyor\configure.ps1
