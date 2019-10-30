@@ -30,19 +30,6 @@ init:
   - redis-64\tools\redis-server.exe --service-start --service-name redis1
   - redis-64\tools\redis-server.exe --service-install --service-name redis2 --port 6380 --requirepass "randomredis"
   - redis-64\tools\redis-server.exe --service-start --service-name redis2
-  - ps: >-
-        InstallPeclExtension `
-          -Name       redis `
-          -Version    4.3.0 `
-          -PhpVersion $Env:PHP_VERSION `
-          -BuildType  $Env:BUILD_TYPE `
-          -VC         $Env:VC_VERSION `
-          -Platform   $Env:PLATFORM
-
-        # An example to enable PHP extension
-  - ps: >-
-      EnablePhpExtension `
-        -Name          redis `
 
 install:
   - ps: .\.appveyor\configure.ps1
