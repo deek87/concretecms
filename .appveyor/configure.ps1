@@ -73,6 +73,7 @@ if (Test-Path -PathType Leaf -Path "$phpInstallPath\php-installed.txt") {
     Enable-PhpExtension -Path $phpInstallPath -Extension mbstring,bz2,mysqli,curl,gd,intl,pdo_mysql,xsl,fileinfo,openssl,opcache
     New-Item -ItemType File -Path "$phpInstallPath\php-installed.txt" | Out-Null
 }
+Install-PhpExtension -Path $phpInstallPath -Extension redis
 Enable-PhpExtension -Path $phpInstallPath -Extension redis
 Write-Host 'Refreshing CA Certificates for PHP'
 Update-PhpCAInfo -Path $phpInstallPath -Source LocalMachine -Verbose
