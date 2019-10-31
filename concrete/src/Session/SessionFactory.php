@@ -333,8 +333,6 @@ class SessionFactory implements SessionFactoryInterface
                 $options['auth'] = $password;
             }
             $redis = $this->app->make(RedisArray::class, [$serverArray, $options]);
-            // Really weird redis bug - on travis it doesnt automatically connect (on windows/mac it does)
-            $redis->auth($password);
         }
 
         return $redis;
