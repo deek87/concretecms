@@ -27,6 +27,7 @@ matrix:
         - ./.travis/composer-deps.sh
         - ./.travis/setup-redis.sh
       script:
+        - php test.php
         - phpdbg -qrr ./concrete/vendor/phpunit/phpunit/phpunit --coverage-clover=coverage.clover
       after_script:
         - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
@@ -60,6 +61,7 @@ matrix:
         - ./.travis/composer-deps.sh
         - ./.travis/setup-redis.sh
       script:
+        - php test.php
         - composer test
       env:
         - REDIS_VERSION=redis-4.3.0
