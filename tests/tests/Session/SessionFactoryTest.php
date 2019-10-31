@@ -146,6 +146,8 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
             ['auth'=>'randomredis',
                 "lazy_connect" => true]
         );
+        $redisClass->auth('randomredis');
+        var_dump($redisClass->_hosts());
         var_dump($redisClass->_function());
         var_dump($redisClass->_target(0));
         var_dump($redisClass->connect('localhost', 6380));
