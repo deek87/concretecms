@@ -86,20 +86,22 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
-    public function testRedisSessionHandler() {
+    public function testRedisSessionHandler() 
+    {
         // Make the private `getSessionHandler` method accessible
         $reflection = new \ReflectionClass(get_class($this->factory));
         $method = $reflection->getMethod('getSessionHandler');
         $method->setAccessible(true);
 
         $config['concrete.session'] = $this->getRedisConfig();
-        /** @var $redis_handler  RedisSessionHandler */
-        $redis_handler = $method->invokeArgs($this->factory, [$this->getRedisConfig()]);
+        $redis_handler = $method->invokeArgs(
+            $this->factory,
+            [$this->getRedisConfig()]
+        );
         $reflection = new \ReflectionClass(RedisSessionHandler::class);
         $property = $reflection->getProperty('redis');
         $property->setAccessible(true);
         $redisClass = $property->getValue($redis_handler);
-        /** @var \Redis $redisClass */
 
         $this->assertInstanceOf(\Redis::class, $redisClass);
         if (version_compare(phpversion('redis'), '4.9.9', '<=')) {
@@ -140,7 +142,10 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         var_dump($redisClass->_hosts());
         var_dump(phpversion('redis'));
         //Testing some things
-        $redisClass = new \RedisArray($this->getRedisHosts($redisConfig[0]), ['auth'=>'randomredis']);
+        $redisClass = new \RedisArray(
+            null, $this->getRedisHosts($redisConfig[0]),
+            ['auth'=>'randomredis']
+        );
         var_dump($redisClass->_hosts());
         var_dump($redisClass);
         $redis1 = new \Redis();
@@ -184,7 +189,8 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
 
     }
 
-    private function getRedisConfig($servers = 1) {
+    private function getRedisConfig($servers = 1) 
+    {
         $config = ['handler' => 'redis',
             'redis' => [
                 'servers'=>[]
@@ -202,7 +208,7 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
                     'ttl' => 30,
                     'password'=>'randomredis',
                 ];
-            $i++;
+                $i++;
         }
         return $config;
     }
