@@ -329,9 +329,12 @@ class SessionFactory implements SessionFactoryInterface
                 $serverArray[] = $serverString;
             }
             $options = ['connect_timeout' => $ttl];
+            if ($password !== null) {
+                $options['auth'] = $password;
+            }
             $redis = $this->app->make(RedisArray::class, [$serverArray, $options]);
-                // Fix for older versions of redis array
-                $redis->auth($password);
+            // Really weird redis bug - on travis it doesnt automatically connect (on windows/mac it does)
+            $redis->auth($password);
         }
 
         return $redis;
