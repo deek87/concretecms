@@ -331,11 +331,13 @@ class SessionFactory implements SessionFactoryInterface
             $options = ['connect_timeout' => $ttl];
             if ($password !== null) {
                 $options['auth'] = $password;
+                var_dump($password);
             }
             $redis = $this->app->make(RedisArray::class, [$serverArray, $options]);
             if ($password !== null) {
                 // Fix for older versions of redis array
                 $redis->auth($password);
+                var_dump($password);
             }
         }
 
@@ -373,7 +375,7 @@ class SessionFactory implements SessionFactoryInterface
                 yield $server;
             }
         } else {
-            yield ['server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.5];
+            yield ['server' => '127.0.0.1', 'port' => '6379', 'ttl' => 0.5, 'password'=> null];
         }
     }
 }

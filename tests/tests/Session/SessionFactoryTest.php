@@ -137,34 +137,6 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         $redis_handler = $method->invokeArgs($this->factory, $redisConfig);
         $redisClass = $property->getValue($redis_handler);
         $property->setAccessible(true);
-        /** @var  $redisClass  \RedisArray */
-        var_dump($redisClass);
-        var_dump($redisClass->_hosts());
-        var_dump(phpversion('redis'));
-        //Testing some things
-        $redisClass = new \RedisArray($this->getRedisHosts($redisConfig[0]),
-            ['auth'=>'randomredis',
-                "lazy_connect" => true]
-        );
-        $redisClass->auth('randomredis');
-        var_dump($redisClass->_hosts());
-        var_dump($redisClass->_function());
-        var_dump($redisClass->_target(0));
-        var_dump($redisClass->connect('localhost', 6380));
-        $redisClass->auth('randomredis');
-        var_dump($redisClass->connect('localhost', 6379));
-        $redisClass->auth('randomredis');
-        var_dump($redisClass->ping());
-        var_dump($redisClass->_hosts());
-        var_dump($redisClass);
-        $redis1 = new \Redis();
-        $redis1->connect('localhost', 6380);
-        $redis1->auth('randomredis');
-        var_dump($redis1->ping());
-        $redis1 = new \Redis();
-        $redis1->connect('localhost', 6379);
-        $redis1->auth('randomredis');
-        var_dump($redis1->ping());
         $this->assertInstanceOf(\RedisArray::class, $redisClass);
 
         if (version_compare(phpversion('redis'), '4.9.9', '<=')) {
