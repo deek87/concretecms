@@ -17,9 +17,21 @@ var_dump($redis->_hosts());
 
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379, 30);
+try {
+    var_dump($redis->ping());
+} catch (\RedisException $e) {
+    echo $e->getMessage();
+}
 $redis->auth('randomredis');
 var_dump($redis->ping());
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6380, 30);
+try {
+    var_dump($redis->ping());
+} catch (\RedisException $e) {
+    echo $e->getMessage();
+}
+
 $redis->auth('randomredis');
 var_dump($redis->ping());
+
