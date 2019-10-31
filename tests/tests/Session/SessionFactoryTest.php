@@ -136,11 +136,13 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
         $redisClass = $property->getValue($redis_handler);
         $property->setAccessible(true);
         /** @var  $redisClass  \RedisArray */
-
+        var_dump($redisClass);
         var_dump($redisClass->_hosts());
         var_dump(phpversion('redis'));
         //Testing some things
         $redisClass = new \RedisArray($this->getRedisHosts($redisConfig[0]), ['auth'=>'randomredis']);
+        var_dump($redisClass->_hosts());
+        var_dump($redisClass);
         $redis1 = new \Redis();
         $redis1->connect('localhost', 6380);
         $redis1->auth('randomredis');
