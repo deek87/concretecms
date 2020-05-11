@@ -55,6 +55,19 @@ abstract class GridFramework
         return count($classes) > 0;
     }
 
+    /**
+     * Used to return a class that will be applied to the
+     * ccm-theme-grid-edit-mode-row-wrapper div
+     * mainly used to apply framework classes to this block.
+     * So we can make it's display grid or flex
+     *
+     * @return string
+     */
+    public function getPageThemeGridFrameworkEditRowClass() {
+
+        return '';
+    }
+
     abstract public function getPageThemeGridFrameworkColumnClasses();
 
     abstract public function getPageThemeGridFrameworkColumnOffsetClasses();

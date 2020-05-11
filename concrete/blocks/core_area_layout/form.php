@@ -163,6 +163,7 @@ $(function() {
 		<?php
 }
     ?>
+        'editModeClass': '<?=$themeGridFramework->getPageThemeGridFrameworkEditRowClass()?>',
 		'gridColumnClasses': [
 			<?php $classes = $themeGridFramework->getPageThemeGridFrameworkColumnClasses();
     ?>

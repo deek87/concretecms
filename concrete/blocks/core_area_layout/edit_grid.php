@@ -11,7 +11,7 @@
 
 <?=$themeGridFramework->getPageThemeGridFrameworkRowStartHTML()?>
 
-<div id="ccm-theme-grid-edit-mode-row-wrapper">
+<div id="ccm-theme-grid-edit-mode-row-wrapper" class="<?=$themeGridFramework->getPageThemeGridFrameworkEditRowClass()?>">
 
 <?php foreach ($columns as $col) {
     ?>
