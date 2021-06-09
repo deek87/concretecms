@@ -291,12 +291,14 @@ class MiniSurvey
 
                 return '<select class="form-control" name="Question' . $msqID . '" id="Question' . $msqID . '" >' . $html . '</select>';
             case 'radios':
+                $index = 1;
                 foreach ($options as $option) {
                     if (strlen(trim($option)) == 0) {
                         continue;
                     }
                     $checked = (Request::request('Question' . $msqID) == trim($option)) ? 'checked' : '';
-                    $html .= '<div class="radio"><label><input name="Question' . $msqID . '" type="radio" value="' . trim($option) . '" ' . $checked . ' /> <span>' . $option . '</span></label></div>';
+                    $html .= '<div class="form-check"><input class="form-check-input" id="Question' . $msqID . '_'.$index.'" name="Question' . $msqID . '" type="radio" value="' . trim($option) . '" ' . $checked . ' /><label for="Question' . $msqID . '_'.$index.'" class="form-check-label"> <span>' . $option . '</span></label></div>';
+                    $index++;
                 }
 
                 return $html;

@@ -60,6 +60,7 @@ class EditProfile extends AccountPageController
     public function save_complete()
     {
         $this->set('success', t('Profile updated successfully.'));
+        var_dump('Profile updated successfully.');
         $this->view();
     }
 
@@ -116,6 +117,7 @@ class EditProfile extends AccountPageController
         }
 
         // password
+        $passwordNew = null;
         if (strlen($data['uPasswordNew'])) {
             $passwordNew = $data['uPasswordNew'];
             $passwordNewConfirm = $data['uPasswordNewConfirm'];
@@ -123,12 +125,13 @@ class EditProfile extends AccountPageController
             $app->make('validator/password')->isValidFor($passwordNew, $ui, $this->error);
 
             if ($passwordNew) {
-                if ($passwordNew != $passwordNewConfirm) {
+                if ($passwordNew !== $passwordNewConfirm) {
                     $this->error->add(t('The two passwords provided do not match.'));
                 }
+            } else {
+                // incase it was set to 0/false/""... etc
+                $passwordNew = null;
             }
-            $data['uPasswordConfirm'] = $passwordNew;
-            $data['uPassword'] = $passwordNew;
         }
 
         $aks = UserAttributeKey::getEditableInProfileList();
@@ -151,8 +154,13 @@ class EditProfile extends AccountPageController
             }
 
             $ui->saveUserAttributesForm($aks);
+            if ($passwordNew !== null) {
+                $ui->changePassword($passwordNew);
+            }
             $ui->update($data);
             $this->redirect('/account/edit_profile', 'save_complete');
+        } else {
+            dd($this->error);
         }
     }
 }

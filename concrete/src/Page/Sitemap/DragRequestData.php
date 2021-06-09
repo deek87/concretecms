@@ -89,6 +89,11 @@ class DragRequestData
     /**
      * @var bool|null
      */
+    protected $multilingual;
+
+    /**
+     * @var bool|null
+     */
     protected $isSaveOldPagePath;
 
     /**
@@ -116,6 +121,7 @@ class DragRequestData
         $this->initializeDragMode();
         $this->initializeDestinationPages();
         $this->initializeOriginalPages();
+        $this->initializeMultilingual();
     }
 
     /**
@@ -172,6 +178,14 @@ class DragRequestData
         }
 
         return $this->isSaveOldPagePath;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMultilingual()
+    {
+        return $this->multilingual;
     }
 
     /**
@@ -297,6 +311,11 @@ class DragRequestData
     protected function initializeDragMode()
     {
         $this->dragMode = $this->request->request->get('dragMode', $this->request->query->get('dragMode', ''));
+    }
+
+    protected function initializeMultilingual()
+    {
+        $this->multilingual = (bool) $this->request->request->get('multilingual', $this->request->query->get('multilingual', false));
     }
 
     /**
@@ -513,4 +532,6 @@ class DragRequestData
 
         return '';
     }
+
+
 }
