@@ -5,6 +5,7 @@ use Concrete\Core\Area\Area;
 use Concrete\Core\Block\Block;
 use Concrete\Core\Entity\Attribute\Value\PageValue;
 use Concrete\Core\Entity\Page\Relation\SiblingRelation;
+use Concrete\Core\Entity\Site\SkeletonTree;
 use Concrete\Core\Localization\Service\Date as DateHelper;
 use Concrete\Core\Multilingual\Page\Section\Section;
 use Concrete\Core\Page\Collection\Collection;
@@ -125,8 +126,6 @@ class Cloner
             'pkgID' => $page->getPackageID(),
         ]);
 
-        $this->directCopy('PageTypeComposerOutputBlocks', 'arHandle, cbDisplayOrder, ptComposerFormLayoutSetControlID, cvID, bID', ['cID' => [$cID, $newCID]]);
-
         PageStatistics::incrementParents($newCID);
 
         $newPage = Page::getByID($newCID);
@@ -166,7 +165,7 @@ class Cloner
         }
 
         $tree = $page->getSiteTreeObject();
-        if (is_object($tree) && $tree instanceof SkeletonTree) {
+        if ($tree instanceof SkeletonTree) {
             // Add a relation between the pages.
             // Is there already a relation used by the source page?
             $relation = $this->entityManager->getRepository('Concrete\Core\Entity\Page\Relation\SiblingRelation')
@@ -419,8 +418,8 @@ class Cloner
         if ($options->copyAttributes()) {
             $this->copyAttributes($cIDs, $cvIDs);
         }
-        if ($options->copyFeatureAssignments()) {
-            $this->copyFeatureAssignments($cIDs, $cvIDs);
+        if ($options->copyPageTypeComposerOutputBlocks()) {
+            $this->copyPageTypeComposerOutputBlocks($cIDs, $cvIDs);
         }
         if ($options->copyCustomStyles()) {
             $this->copyCustomStyles($cIDs, $cvIDs);
@@ -456,14 +455,14 @@ class Cloner
     }
 
     /**
-     * Copy the feature assignments from one collection version (or all versions of a collection) to another collection version (or all versions of a collection).
+     * Copy the page type composer block output records from one version to another.
      *
      * @param int[] $cIDs An array with the ID of the source and destination collections
      * @param int[]|null $cvIDs An array with the source and destination collection versions, or NULL to copy the data of all the collection versions
      */
-    protected function copyFeatureAssignments(array $cIDs, array $cvIDs = null)
+    protected function copyPageTypeComposerOutputBlocks(array $cIDs, array $cvIDs = null)
     {
-        $this->directCopy('CollectionVersionFeatureAssignments', 'faID', ['cID' => $cIDs, 'cvID' => $cvIDs]);
+        $this->directCopy('PageTypeComposerOutputBlocks', 'arHandle, cbDisplayOrder, ptComposerFormLayoutSetControlID, bID', ['cID' => $cIDs, 'cvID' => $cvIDs]);
     }
 
     /**
@@ -518,15 +517,6 @@ class Cloner
         $this->directCopy(
             'CollectionVersionBlocksCacheSettings',
             'arHandle, btCacheBlockOutput, btCacheBlockOutputOnPost, btCacheBlockOutputForRegisteredUsers, btCacheBlockOutputLifetime',
-            [
-                'cID' => $cIDs,
-                'cvID' => $cvIDs,
-                'bID' => $bIDs,
-            ]
-        );
-        $this->directCopy(
-            'BlockFeatureAssignments',
-            'faID',
             [
                 'cID' => $cIDs,
                 'cvID' => $cvIDs,

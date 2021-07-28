@@ -14,7 +14,7 @@ class NameCorePageProperty extends CorePageProperty
     public function __construct()
     {
         $this->setCorePagePropertyHandle('name');
-        $this->setPageTypeComposerControlIconFormatter(new FontAwesomeIconFormatter('file-text'));
+        $this->setPageTypeComposerControlIconFormatter(new FontAwesomeIconFormatter('file-alt'));
     }
 
     public function getPageTypeComposerControlName()
@@ -68,7 +68,9 @@ class NameCorePageProperty extends CorePageProperty
     public function getRequestValue($args = false)
     {
         $data = parent::getRequestValue($args);
-        $data['name'] = Core::make('helper/security')->sanitizeString($data['name']);
+        if (is_array($data) && isset($data['name'])) {
+            $data['name'] = Core::make('helper/security')->sanitizeString($data['name']);
+        }
 
         return $data;
     }

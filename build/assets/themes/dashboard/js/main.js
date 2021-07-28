@@ -1,20 +1,41 @@
-// Import the frontend foundation for themes.
-import '@concretecms/bedrock/assets/bedrock/js/frontend';
-
 // Import the CMS foundation in order to support editing, toolbar, panel functionality
 import '@concretecms/bedrock/assets/cms/js/base';
 
-// My Account
+// Import the frontend foundation for themes.
+// Has to come after cms base because cms base registers the Vue Manager
+import '@concretecms/bedrock/assets/bedrock/js/frontend';
+
+// Import the CMS components and the backend components
+// Note, this currently isn't technically necessary, but I'm putting here so we have some place to put components
+// as we create them.
+import BoardInstanceRule from './components/Board/InstanceRule'
+
+Concrete.Vue.createContext('backend', {
+    BoardInstanceRule
+}, 'cms')
+
+// Desktops and waiting for me
+import '@concretecms/bedrock/assets/desktop/js/frontend';
+
+// Avatar picker
 import '@concretecms/bedrock/assets/account/js/frontend';
 
 // Calendar
 import '@concretecms/bedrock/assets/calendar/js/backend';
 
-// Other
-import './jquery-bootstrap-select-to-button';
+// Advanced search and search bars
+import './search/advanced-search-launcher';
+import './search/preset-selector';
+import './search/results-table';
+import './file-manager/file-manager';
+import './groups/group-manager';
+
+// Custom UI for Pages
 import './translator';
-import './stacks/menu';
+
+// Marketplace support
 import './remote-marketplace';
+import components from "@concretecms/bedrock/assets/cms/components/index";
 
 var setupResultMessages = function() {
     if ($('#ccm-dashboard-result-message').length > 0) {
@@ -28,6 +49,10 @@ var setupResultMessages = function() {
         $("#ccm-dashboard-result-message").fadeIn(200);
     }
 };
+
+var setupAdvancedSearchLinks = function() {
+    $('a[data-launch-dialog=advanced-search]').concreteAdvancedSearchLauncher();
+}
 
 var setupFavorites = function() {
     var $addFavorite = $('a[data-bookmark-action=add-favorite]'),
@@ -68,7 +93,7 @@ var setupFavorites = function() {
 };
 
 var setupDetailsURLs = function() {
-    $('table.ccm-search-results-table tr[data-details-url]').each(function() {
+    $('tr[data-details-url]').each(function() {
         $(this).hover(
             function() {
                 $(this).addClass('ccm-search-select-hover');
@@ -77,8 +102,10 @@ var setupDetailsURLs = function() {
                 $(this).removeClass('ccm-search-select-hover');
             }
         )
-            .on('click', function() {
-                window.location.href = $(this).data('details-url');
+            .on('click', function(e) {
+                if ($(e.target).is('td')) {
+                    window.location.href = $(this).data('details-url');
+                }
             });
     });
     $('div.ccm-details-panel[data-details-url]').each(function() {
@@ -147,23 +174,30 @@ var setupPrivacyPolicy = function() {
     });
 };
 
-var setupSiteListMenuItem = function() {
-    $('select[data-select=ccm-header-site-list]').show().selectize({
-        'onItemAdd': function(option) {
-            window.location.href = option;
+var setupHeaderMenu = function() {
+    var $buttons = $('.ccm-dashboard-header-buttons'),
+        $menu = $('header div.ccm-dashboard-header-menu');
+    if ($buttons.length) {
+        if ($buttons.parent().get(0).nodeName.toLowerCase() == 'form') {
+            $menu.append($buttons.parent());
+        } else {
+            $menu.append($buttons);
         }
-    });
+    }
 };
 
-var setupSelects = function() {
-    $('select[data-select=bootstrap]').bootstrapSelectToButton();
+var setupSiteListMenuItem = function() {
+    $('select[data-select=ccm-header-site-list]').on('changed.bs.select', function() {
+        window.location.href = $(this).val()
+    })
 };
 
 setupTooltips();
 setupResultMessages();
 setupSiteListMenuItem();
 setupDialogs();
-setupSelects();
 setupDetailsURLs();
 setupFavorites();
+setupAdvancedSearchLinks();
+setupHeaderMenu();
 setupPrivacyPolicy();

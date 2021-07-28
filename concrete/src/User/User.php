@@ -1,11 +1,17 @@
 <?php
+
 namespace Concrete\Core\User;
 
+use Concrete\Core\Application\UserInterface\Dashboard\Navigation\NavigationCache;
+use Concrete\Core\Config\Repository\Repository;
 use Concrete\Core\Database\Query\LikeBuilder;
+use Concrete\Core\Entity\Notification\GroupSignupNotification;
+use Concrete\Core\Entity\User\GroupSignup;
 use Concrete\Core\Foundation\ConcreteObject;
 use Concrete\Core\Http\Request;
 use Concrete\Core\Logging\Channels;
 use Concrete\Core\Logging\LoggerFactory;
+use Concrete\Core\Notification\Type\GroupSignupType;
 use Concrete\Core\Permission\Access\Entity\GroupEntity;
 use Concrete\Core\Session\SessionValidator;
 use Concrete\Core\Support\Facade\Application;
@@ -13,9 +19,9 @@ use Concrete\Core\User\Group\Group;
 use Concrete\Core\Authentication\AuthenticationType;
 use Concrete\Core\Page\Page;
 use Concrete\Core\User\Group\GroupList;
+use Concrete\Core\User\Group\GroupRole;
 use Hautelook\Phpass\PasswordHash;
 use Concrete\Core\Permission\Access\Entity\Entity as PermissionAccessEntity;
-use Concrete\Core\User\Point\Action\Action as UserPointAction;
 use Concrete\Core\Encryption\PasswordHasher;
 
 class User extends ConcreteObject
@@ -56,6 +62,10 @@ class User extends ConcreteObject
             if ($login) {
                 $nu->persist($cacheItemsOnLogin);
                 $nu->recordLogin();
+                $app = Application::getFacadeApplication();
+                /** @var NavigationCache $navigationCache */
+                $navigationCache = $app->make(NavigationCache::class);
+                $navigationCache->clear();
             }
         }
 
@@ -165,6 +175,7 @@ class User extends ConcreteObject
             $password = $args[1];
             $disableLogin = isset($args[2]) ? (bool) $args[2] : false;
             if (!$disableLogin) {
+                $session->migrate();
                 $session->remove('uGroups');
                 $session->remove('accessEntities');
             }
@@ -210,7 +221,6 @@ class User extends ConcreteObject
                 } else {
                     $this->loadError(USER_INVALID);
                 }
-                $r->free();
                 if ($pw_is_valid_legacy) {
                     // this password was generated on a previous version of Concrete5.
                     // We re-hash it to make it more secure.
@@ -392,7 +402,7 @@ class User extends ConcreteObject
         $app = Application::getFacadeApplication();
         $at = AuthenticationType::getByHandle($authType);
         $token = $at->getController()->buildHash($this);
-        $value = new PersistentAuthentication\CookieValue((int) $this->getUserID(), $authType, $token);
+        $value = new PersistentAuthentication\CookieValue((int)$this->getUserID(), $authType, $token);
         $app->make(PersistentAuthentication\CookieService::class)->setCookie($value);
     }
 
@@ -444,10 +454,15 @@ class User extends ConcreteObject
         $this->unloadAuthenticationTypes();
 
         $this->invalidateSession($hard);
-        $app->singleton(User::class, function() {
+        $app->singleton(User::class, function () {
             return new User();
         });
         $events->dispatch('on_user_logout');
+
+        $app = Application::getFacadeApplication();
+        /** @var NavigationCache $navigationCache */
+        $navigationCache = $app->make(NavigationCache::class);
+        $navigationCache->clear();
     }
 
     /**
@@ -617,7 +632,7 @@ class User extends ConcreteObject
             }
         } else {
 
-            if ((int) $this->getUserID() > 0) {
+            if ((int)$this->getUserID() > 0) {
                 $entities = PermissionAccessEntity::getForUser($this);
             } else {
                 $group = Group::getByID(GUEST_GROUP_ID);
@@ -674,6 +689,31 @@ class User extends ConcreteObject
 
     /**
      * @param Group $g
+     * @param GroupRole $r
+     */
+    public function changeGroupRole($g, $r)
+    {
+        $app = Application::getFacadeApplication();
+        $db = $app['database']->connection();
+
+        if (is_object($g)) {
+            if (!$this->inExactGroup($g)) {
+                $db->Replace('UserGroups', [
+                    'uID' => $this->getUserID(),
+                    'gID' => $g->getGroupID(),
+                    'grID' => $r->getId()
+                ], ['uID', 'gID'], true);
+
+                $ue = new \Concrete\Core\User\Event\UserGroup($this);
+                $ue->setGroupObject($g);
+
+                $app['director']->dispatch('on_user_change_group_role', $ue);
+            }
+        }
+    }
+
+    /**
+     * @param Group $g
      */
     public function enterGroup($g)
     {
@@ -685,35 +725,39 @@ class User extends ConcreteObject
             if (!$this->inExactGroup($g)) {
                 $gID = $g->getGroupID();
                 $db = $app['database']->connection();
+                $grID = DEFAULT_GROUP_ROLE_ID;
+
+                $role = $g->getDefaultRole();
+
+                if (is_object($role)) {
+                    $grID = $role->getId();
+                }
 
                 $db->Replace('UserGroups', [
                     'uID' => $this->getUserID(),
                     'gID' => $g->getGroupID(),
                     'ugEntered' => $dt->getOverridableNow(),
+                    'grID' => $grID
                 ],
-                ['uID', 'gID'], true);
-
-                if ($g->isGroupBadge()) {
-                    $action = UserPointAction::getByHandle('won_badge');
-                    if (is_object($action)) {
-                        $action->addDetailedEntry($this, $g);
-                    }
-
-                    $mh = $app->make('mail');
-                    $ui = UserInfo::getByID($this->getUserID());
-                    $mh->addParameter('badgeName', $g->getGroupDisplayName(false));
-                    $mh->addParameter('uDisplayName', $ui->getUserDisplayName());
-                    $mh->addParameter('uProfileURL', (string) $ui->getUserPublicProfileURL());
-                    $mh->addParameter('siteName', tc('SiteName', $app['site']->getSite()->getSiteName()));
-                    $mh->to($ui->getUserEmail());
-                    $mh->load('won_badge');
-                    $mh->sendMail();
-                }
+                    ['uID', 'gID'], true);
 
                 $ue = new \Concrete\Core\User\Event\UserGroup($this);
                 $ue->setGroupObject($g);
 
                 $app['director']->dispatch('on_user_enter_group', $ue);
+
+                /** @noinspection PhpUnhandledExceptionInspection */
+                $subject = new GroupSignup($g, $this);
+                /** @var GroupSignupType $type */
+                $type = $app->make('manager/notification/types')->driver('group_signup');
+                $notifier = $type->getNotifier();
+
+                if (method_exists($notifier, 'notify')) {
+                    $subscription = $type->getSubscription($subject);
+                    $users = $notifier->getUsersToNotify($subscription, $subject);
+                    $notification = new GroupSignupNotification($subject);
+                    $notifier->notify($users, $notification);
+                }
             }
         }
     }
@@ -767,7 +811,7 @@ class User extends ConcreteObject
             ->setMaxResults(1);
         $results = $query->execute()->fetchColumn();
 
-        return (bool) $results;
+        return (bool)$results;
     }
 
     /**
@@ -792,7 +836,7 @@ class User extends ConcreteObject
             ->setMaxResults(1);
         $results = $query->execute()->fetchColumn();
 
-        return (bool) $results;
+        return (bool)$results;
     }
 
     /**
@@ -819,6 +863,12 @@ class User extends ConcreteObject
     public function loadCollectionEdit(&$c)
     {
         $c->refreshCache();
+
+        // clear the cached available areas before entering edit mode
+        $app = Application::getFacadeApplication();
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $app->make("session");
+        $session->remove("used_areas");
 
         // can only load one page into edit mode at a time.
         if ($c->isCheckedOut()) {
@@ -911,7 +961,7 @@ class User extends ConcreteObject
     {
         $app = Application::getFacadeApplication();
 
-        return (int) $app['session']->get('frontendPreviousPageID');
+        return (int)$app['session']->get('frontendPreviousPageID');
     }
 
     /**
@@ -960,9 +1010,9 @@ class User extends ConcreteObject
     }
 
     /**
+     * @return \Hautelook\Phpass\PasswordHash
      * @deprecated Use $app->make(\Concrete\Core\Encryption\PasswordHasher::class)
      *
-     * @return \Hautelook\Phpass\PasswordHash
      */
     public function getUserPasswordHasher()
     {
@@ -989,6 +1039,10 @@ class User extends ConcreteObject
 
         $app = Application::getFacadeApplication();
 
+
+        /** @var Repository $config */
+        $config = $app->make(Repository::class);
+
         /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
         $session = $app['session'];
         $session->set('uID', $this->getUserID());
@@ -1000,12 +1054,28 @@ class User extends ConcreteObject
         $session->set('uDefaultLanguage', $this->getUserDefaultLanguage());
         $session->set('uLastPasswordChange', $this->getLastPasswordChange());
 
+        /** @var \Concrete\Core\Cookie\CookieJar $cookie */
         $cookie = $app['cookie'];
-        $cookie->set(sprintf('%s_LOGIN', $app['config']->get('concrete.session.name')), 1);
+
+        $cookie->set(
+            sprintf('%s_LOGIN', $app['config']->get('concrete.session.name')),
+            1,
+            // $expire
+            time() + (int)$config->get('concrete.session.remember_me.lifetime'),
+            // $path
+            DIR_REL . '/',
+            // $domain
+            $config->get('concrete.session.cookie.cookie_domain'),
+            // $secure
+            $config->get('concrete.session.cookie.cookie_secure'),
+            // $httpOnly
+            $config->get('concrete.session.cookie.cookie_httponly')
+        );
 
         if ($cache_interface) {
             $app->make('helper/concrete/ui')->cacheInterfaceItems();
         }
+        $app->instance(User::class, $this);
     }
 
     /**

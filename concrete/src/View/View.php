@@ -165,7 +165,7 @@ class View extends AbstractView
     {
         $env = Environment::get();
         $app = Facade::getFacadeApplication();
-        // Note: Making this ALWAYS override the $controller->setTheme() was making this really inflexible. 
+        // Note: Making this ALWAYS override the $controller->setTheme() was making this really inflexible.
         // We need to be able to set site themes from dashboard pages for complex board rendering. So I'm only going
         // to go to the theme route collection if the theme isn't set explicitly in the controller.
         if (!$this->getThemeHandle()) {
@@ -236,10 +236,10 @@ class View extends AbstractView
 
     protected function onBeforeGetContents()
     {
+        $this->themeObject->registerAssets();
         $event = new \Symfony\Component\EventDispatcher\GenericEvent();
         $event->setArgument('view', $this);
         Events::dispatch('on_before_render', $event);
-        $this->themeObject->registerAssets();
     }
 
     public function renderViewContents($scopeItems)

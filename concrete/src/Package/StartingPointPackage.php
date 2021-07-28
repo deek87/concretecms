@@ -20,7 +20,7 @@ use Concrete\Core\Permission\Access\Entity\UserEntity;
 use Concrete\Core\Tree\Node\Type\ExpressEntryCategory;
 use Concrete\Core\Tree\Type\ExpressEntryResults;
 use Concrete\Core\Updater\Migrations\Configuration;
-use Concrete\Core\User\Point\Action\Action as UserPointAction;
+use Concrete\Core\User\Group\FolderManager;
 use Config;
 use Core;
 use Database;
@@ -81,7 +81,6 @@ class StartingPointPackage extends Package
             new StartingPointInstallRoutine('install_jobs', 69, t('Installing automated jobs.')),
             new StartingPointInstallRoutine('install_dashboard', 78, t('Installing dashboard.')),
             new StartingPointInstallRoutine('install_required_single_pages', 79, t('Installing login and registration pages.')),
-            new StartingPointInstallRoutine('install_image_editor', 80, t('Adding image editor functionality.')),
             new StartingPointInstallRoutine('install_config', 81, t('Configuring site.')),
             new StartingPointInstallRoutine('import_files', 82, t('Importing files.')),
             new StartingPointInstallRoutine('install_content', 83, t('Adding pages and content.')),
@@ -204,6 +203,7 @@ class StartingPointPackage extends Package
         \Concrete\Core\Tree\Node\NodeType::add('express_entry_category');
         \Concrete\Core\Tree\TreeType::add('express_entry_results');
         \Concrete\Core\Tree\Node\NodeType::add('express_entry_results');
+        \Concrete\Core\Tree\Node\NodeType::add('express_entry_site_results');
 
         $tree = ExpressEntryResults::add();
         $node = $tree->getRootTreeNodeObject();
@@ -257,12 +257,6 @@ class StartingPointPackage extends Package
         $ci = new ContentImporter();
         $ci->importContentFile(DIR_BASE_CORE . '/config/install/base/single_pages/global.xml');
         $ci->importContentFile(DIR_BASE_CORE . '/config/install/base/single_pages/root.xml');
-    }
-
-    protected function install_image_editor()
-    {
-        $ci = new ContentImporter();
-        $ci->importContentFile(DIR_BASE_CORE . '/config/install/base/image_editor.xml');
     }
 
     /**
@@ -515,12 +509,22 @@ class StartingPointPackage extends Package
         $u = User::getByUserID(USER_SUPER_ID, true, false);
 
         MailImporter::add(['miHandle' => 'private_message']);
-        UserPointAction::add('won_badge', t('Won a Badge'), 5, false, true);
 
         // Install conversation default email
         \Conversation::setDefaultSubscribedUsers([$superuser]);
         $ci = new ContentImporter();
         $ci->importContentFile(DIR_BASE_CORE . '/config/install/base/conversation.xml');
+
+        $folderManager = new FolderManager();
+        $folderManager->create();
+
+        // Add Group Type + Default Role and assign them to the groups
+        $db = Database::get();
+        $db->executeQuery('insert into GroupTypes (gtID, gtName, gtDefaultRoleID) values (?,?, ?)', [DEFAULT_GROUP_TYPE_ID, t("Group"), DEFAULT_GROUP_ROLE_ID]);
+        $db->executeQuery('insert into GroupRoles (grID, grName) values (?,?)', [DEFAULT_GROUP_ROLE_ID, t("Member")]);
+        $db->executeQuery('insert into GroupTypeSelectedRoles (gtID, grID) values (?,?)', [DEFAULT_GROUP_TYPE_ID, DEFAULT_GROUP_ROLE_ID]);
+        $db->executeQuery('update `Groups` set gtID = ?, gDefaultRoleID = ?', [DEFAULT_GROUP_TYPE_ID, DEFAULT_GROUP_ROLE_ID]);
+        $db->executeQuery('update UserGroups set grID = ?', [DEFAULT_GROUP_ROLE_ID]);
     }
 
     protected function make_directories()

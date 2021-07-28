@@ -106,7 +106,7 @@ class PageViewTest extends PageTestCase
         $edit_profile = Single::add('/account/edit_profile');
         $controller = $edit_profile->getPageController();
         $controller->setTheme('dashboard');
-        $controller->setThemeViewTemplate('account.php'); // This should be ignored because the dashboard doesn't have this.
+        $controller->setThemeViewTemplate('profile.php'); // This should be ignored because the dashboard doesn't have this.
         $view = $controller->getViewObject();
         $view->setupRender();
         $inner = $view->getInnerContentFile();
@@ -119,7 +119,7 @@ class PageViewTest extends PageTestCase
     public function testRenderingEditProfilePageThemePathOverride()
     {
         $collection = $this->app->make(ThemeRouteCollection::class);
-        $collection->setThemeByRoute('/account/*', 'elemental', 'full.php');
+        $collection->setThemeByRoute('/account/*', 'elemental', 'profile_full.php'); // should be ignored because dashboard doesn't have this.
 
         $edit_profile = Single::add('/account/edit_profile');
         $controller = $edit_profile->getPageController();

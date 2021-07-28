@@ -4,7 +4,6 @@ namespace Concrete\Core\User\Group\Command\Traits;
 
 trait GroupDetailsTrait
 {
-
     /**
      * @var string
      */
@@ -26,94 +25,125 @@ trait GroupDetailsTrait
     protected $badgeDescription = '';
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $parentGroupID = 0;
+    protected $parentGroupID;
 
     /**
-     * @return mixed
+     * @var int|null
      */
-    public function getName()
+    protected $parentNodeID;
+
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param mixed $name
+     * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): object
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @param mixed $description
+     * @return $this
      */
-    public function setDescription($description): void
+    public function setDescription(string $description): object
     {
         $this->description = $description;
+
+        return $this;
     }
 
-
     /**
+     * @deprecated
      * @return bool
      */
-    public function isBadge() : bool
+    public function isBadge(): bool
     {
         return $this->isBadge;
     }
 
     /**
-     * @param mixed $isBadge
+     * @deprecated
+     * @return $this
      */
-    public function setIsBadge($isBadge): void
+    public function setIsBadge(bool $isBadge): object
     {
         $this->isBadge = $isBadge;
+
+        return $this;
     }
 
     /**
+     * @deprecated
      * @return string
      */
-    public function getBadgeDescription() : string
+    public function getBadgeDescription(): string
     {
         return $this->badgeDescription;
     }
 
     /**
-     * @param mixed $badgeDescription
+     * @deprecated
+     * @return $this
      */
-    public function setBadgeDescription($badgeDescription): void
+    public function setBadgeDescription(string $badgeDescription): object
     {
         $this->badgeDescription = $badgeDescription;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @deprecated
+     * Use the parent node instead.
+     *
+     * @return int|null
      */
-    public function getParentGroupID() : int
+    public function getParentGroupID(): ?int
     {
         return $this->parentGroupID;
     }
 
     /**
-     * @param mixed $parentGroupID
+     * @deprecated
+     * Use the parent node instead.
+     *
+     * @return $this
      */
-    public function setParentGroupID($parentGroupID): void
+    public function setParentGroupID(?int $parentGroupID): object
     {
         $this->parentGroupID = $parentGroupID;
+
+        return $this;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getParentNodeID(): ?int
+    {
+        return $this->parentNodeID;
+    }
 
-
-
-
+    /**
+     * @param int|null $parentNodeID
+     * @return object
+     */
+    public function setParentNodeID(?int $parentNodeID): object
+    {
+        $this->parentNodeID = $parentNodeID;
+        return $this;
+    }
 
 }

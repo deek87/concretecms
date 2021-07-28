@@ -14,7 +14,7 @@ class TemplateLocator
 {
 
     /**
-     * @var FileLocator 
+     * @var FileLocator
      */
     protected $fileLocator;
 
@@ -24,15 +24,23 @@ class TemplateLocator
     protected $themeLocation;
 
     /**
-     * @var Service 
+     * @var Service
      */
     protected $siteService;
-    
+
     public function __construct(Service $siteService, FileLocator $fileLocator, FileLocator\ThemeLocation $themeLocation)
     {
         $this->siteService = $siteService;
         $this->fileLocator = $fileLocator;
         $this->themeLocation = $themeLocation;
+    }
+
+    /**
+     * @return FileLocator
+     */
+    public function getFileLocator()
+    {
+        return $this->fileLocator;
     }
 
     /**
@@ -48,9 +56,10 @@ class TemplateLocator
             if ($theme) {
                 $handle = $template->getHandle();
                 if ($handle) {
-                    $filename = DIRNAME_ELEMENTS . '/' . DIRNAME_SUMMARY . '/' . $handle . '.php';
+                    $filename = DIRNAME_ELEMENTS . '/' . DIRNAME_SUMMARY . '/' . DIRNAME_SUMMARY_TEMPLATES . '/' . $handle . '.php';
                     $this->themeLocation->setTheme($theme);
                     $this->fileLocator->addLocation($this->themeLocation);
+                    $this->fileLocator->addPackageLocation($template->getPackageHandle());
                     $record = $this->fileLocator->getRecord($filename);
                     if ($record->exists()) {
                         return $record->getFile();
@@ -58,9 +67,9 @@ class TemplateLocator
                 }
             }
         }
-        
+
         return null;
 
     }
-    
+
 }

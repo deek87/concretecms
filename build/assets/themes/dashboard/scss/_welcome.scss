@@ -1,3 +1,10 @@
+@import "./welcome/site-activity";
+@import "./welcome/rss-displayer";
+@import "./welcome/latest-form";
+@import "./welcome/marketplace";
+@import "./welcome/draft-list";
+@import "./welcome/newsflow-latest";
+
 body.ccm-dashboard-desktop {
   background-color: #f8fafb;
   -webkit-font-smoothing: antialiased;
@@ -22,6 +29,8 @@ body.ccm-dashboard-desktop {
     }
 
     div.ccm-dashboard-desktop-content {
+      margin-left: $dashboard-content-padding-l;
+      margin-right: $dashboard-content-padding-r;
       position: relative;
       z-index: 1;
     }

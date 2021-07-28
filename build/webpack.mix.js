@@ -7,29 +7,71 @@ mix.webpackConfig({
         symlinks: false
     },
     externals: {
-        jquery: 'jQuery'
+        jquery: 'jQuery',
+        bootstrap: true,
+        vue: 'Vue',
+        moment: 'moment'
+    },
+    // Override the default js compile settings to replace exclude with something that doesn't exclude node_modules.
+    // @see node_modules/laravel-mix/src/components/JavaScript.js for the original
+    module: {
+        rules: [
+            {
+                test: /\.jsx?$/,
+                exclude: /(bower_components|node_modules\/v-calendar)/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: Config.babel()
+                    }
+                ]
+            }
+        ]
     }
 });
+
 mix.options({
     processCssUrls: false
 });
+
 mix.setPublicPath('../concrete');
+
+/********************************************************/
+/* IMPORTANT: when you add/remove a generated asset,    */
+/* remember to update libraries/git-skip.js accordingly */
+/********************************************************/
 
 /**
  * Copy pre-minified assets.
  */
+if (mix.inProduction()) {
+    mix.copy('node_modules/vue/dist/vue.min.js', '../concrete/js/vue.js');
+} else {
+    mix.copy('node_modules/vue/dist/vue.js', '../concrete/js/vue.js');
+}
 mix.copy('node_modules/jquery/dist/jquery.min.js', '../concrete/js/jquery.js');
 mix.copy('node_modules/@fortawesome/fontawesome-free/webfonts', '../concrete/css/webfonts');
 mix.copy('node_modules/@fortawesome/fontawesome-free/css/all.css', '../concrete/css/fontawesome/all.css');
+mix.copy('node_modules/bootstrap/dist/js/bootstrap.bundle.min.js', '../concrete/js/bootstrap.js');
 mix.copy('node_modules/ckeditor4', '../concrete/js/ckeditor');
-
+mix.copy('node_modules/ace-builds/src-min', '../concrete/js/ace');
 /**
  * Build shared assets
  */
+// Fullcalendar
+mix
+    .copy('node_modules/fullcalendar/dist/fullcalendar.min.css', '../concrete/css/fullcalendar.css')
+    .js('node_modules/@concretecms/bedrock/assets/calendar/js/vendor/fullcalendar.js', 'js/fullcalendar.js');
+
 // CKEditor
 mix
     .sass('node_modules/@concretecms/bedrock/assets/ckeditor/scss/concrete.scss', 'css/ckeditor/concrete.css')
     .js('node_modules/@concretecms/bedrock/assets/ckeditor/js/concrete.js', 'js/ckeditor/concrete.js');
+
+// TUI Image Editor
+mix
+    .js('assets/tui-image-editor/tui-image-editor.js', 'js/tui-image-editor.js')
+    .sass('assets/tui-image-editor/tui-image-editor.scss', 'css/tui-image-editor.css');
 
 // The CMS entry point
 mix
@@ -54,6 +96,12 @@ mix
 mix
     .sass('assets/themes/dashboard/scss/main.scss', 'themes/dashboard')
     .js('assets/themes/dashboard/js/main.js', 'themes/dashboard');
+
+/**
+ * Build Block Components
+ */
+mix.js('assets/blocks/gallery/gallery.js', '../concrete/blocks/gallery/auto.js');
+
 
 /**
  * Build accessory Features
@@ -122,6 +170,11 @@ mix
  * Copy bedrock SVGs into our repository
  */
 mix.copy('node_modules/@concretecms/bedrock/assets/icons/sprites.svg', '../concrete/images/icons/bedrock/sprites.svg');
+
+/**
+ * Copy jquery ui icons into our repository
+ */
+mix.copy('node_modules/jquery-ui/themes/base/images/ui-*', '../concrete/images/');
 
 /**
  * Turn off notifications
