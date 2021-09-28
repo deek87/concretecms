@@ -105,5 +105,5 @@ jobs:
           wget --tries=5 https://scrutinizer-ci.com/ocular.phar
           php ocular.phar code-coverage:upload --format=php-clover coverage.clover
       - name: "Ignore Results"
-        if: ${{ failure() && matrix.php-version == 8.1 }}
+        if: ${{ failure() && matrix.php-version == '8.1' }}
         run: exit 0;
